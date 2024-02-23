@@ -1,41 +1,43 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { useLocalSearchParams, Link, router } from 'expo-router';
+
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Button from './components/Button';
 export default function App() {
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.text}>ACE</Text>
-      </View>
-      {/* Circles */}
-      <View style={styles.circleContainer}>
-        <View style={styles.circle}>
-          <Text style={styles.circleText}>Quick</Text>
-          <Ionicons name="flash" size={40} color="#ffffff" />
-        </View>
-        <View style={styles.circle}>
-          <Text style={styles.circleText}>Event</Text>
-          <Ionicons name="calendar" size={40} color="#ffffff" />
-        </View>
-        <View style={styles.circle}>
-          <Text style={styles.circleText}>Alarm</Text>
-          <Ionicons name="alarm" size={40} color="#ffffff" />
-        </View>
-          {/* Small circle on the left */}
-        <View style={styles.smallCircleLeft}>
-          <Ionicons name="search" size={30} color="#ffffff"/>
-        </View>
+     <View style={styles.container}>
+       {/* Header */}
+       <View style={styles.header}>
 
-          {/* Small circle on the right */}
-        <View style={styles.smallCircleRight}>
-          <Ionicons name="settings" size={30} color="#ffffff"/>
+         <Text style={styles.text}>ACE</Text>
+       </View>
+
+       {/* Circles */}
+       <View style={styles.circleContainer}>
+         {/* Replace circles with Button component */}
+         <Button label="Quick" theme="primary" onPress={() => router.push("/Screens/QuickReminder")}>
+           <Ionicons name="flash" size={40} color="#ffffff" />
+         </Button>
+         <Button label="Event" theme="primary" onPress={() => router.push("/Screens/Event")}>
+           <Ionicons name="calendar" size={40} color="#ffffff" />
+         </Button>
+         <Button label="Alarm" theme="primary" onPress={() => router.push("/Screens/Alarm")}>
+           <Ionicons name="alarm" size={40} color="#ffffff" />
+         </Button>
+       </View>
+    {/*Small Circle Left*/}
+         <View style={styles.smallCircleLeft}>
+           <Ionicons name="search" size={30} color="#ffffff"/>
+         </View>
+    {/*Small Circle Right*/}
+         <View style={styles.smallCircleRight}>
+           <Ionicons name="settings" size={30} color="#ffffff"/>
         </View>
-      </View>
-      <StatusBar style="auto" />
+        <StatusBar style="auto" />
     </View>
-  );
-}
+   );
+ };
 
 const styles = StyleSheet.create({
   header: {
@@ -49,6 +51,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'relative',
   },
   text: {
     fontSize: 30,
@@ -57,7 +60,7 @@ const styles = StyleSheet.create({
   circleContainer: {
     flexDirection: 'column',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 50,
   },
   circle: {
     width: 200,
@@ -84,6 +87,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 2,
   },
   smallCircleRight: {
     position: 'absolute',
