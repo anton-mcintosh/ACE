@@ -1,3 +1,4 @@
+/*At the moment, this isn't being used. But it may in the future.*/
 import { Tabs } from "expo-router";
 
 const TabsLayout = () => {
