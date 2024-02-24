@@ -9,7 +9,6 @@ export default function App() {
   return (
     <View style={styles.container}>
       {/* Circles */}
-      <View style={styles.circleContainer}>
         {/* Replace circles with Button component */}
         <Button label="Quick" theme="primary" onPress={() => router.push("/Screens/QuickReminder")}>
           <Ionicons name="flash" size={40} color="#ffffff" />
@@ -20,7 +19,6 @@ export default function App() {
         <Button label="Alarm" theme="primary" onPress={() => router.push("/Screens/Alarm")}>
           <Ionicons name="alarm" size={40} color="#ffffff" />
         </Button>
-      </View>
 
       {/* Small Circle Left */}
       <View style={styles.smallCircleLeft}>
@@ -32,7 +30,7 @@ export default function App() {
       {/* Small Circle Right */}
       <View style={styles.smallCircleRight}>
         <Button theme="secondary" onPress={() => router.push("/Screens/Settings")}>
-          <Ionicons name="flash" size={30} color="#ffffff" />
+          <Ionicons name="settings-outline" size={30} color="#ffffff" />
         </Button>
       </View>
 
@@ -60,8 +58,6 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     backgroundColor: 'orange',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   smallCircleRight: {
     position: 'absolute',
