@@ -21,7 +21,7 @@ const RootLayout = () => {
         <Stack.Screen name="/Screens/Alarm" options={{
           headerTitle: "Alarm"
         }} />
-           <Stack.Screen name="/Screens/Search" options={{
+        <Stack.Screen name="/Screens/Search" options={{
              headerTitle: "Search"
         }}/>
         <Stack.Screen name="/Screens/Settings" options={{
