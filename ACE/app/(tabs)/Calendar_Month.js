@@ -1,126 +1,91 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, Text, Button, Platform } from "react-native";
+import * as Calendar from "expo-calendar";
 
-const Calendar = () => {
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+export default function App() {
+  const [currentMonthYear, setCurrentMonthYear] = useState("");
+  const [currentDate, setCurrentDate] = useState(new Date());
 
-  // Sample data representing reminders on specific days
-  const reminders = {
-    10: ['alarm', 'event'], // Reminders on the 10th day of the month
-    15: ['reminder'], // Reminders on the 15th day of the month
-    // Add more reminders as needed
-  };
+  useEffect(() => {
+    const getCurrentMonthYear = () => {
+      const options = { month: "long", year: "numeric" };
+      const formattedDate = currentDate.toLocaleDateString("en-US", options);
+      setCurrentMonthYear(formattedDate);
+    };
 
-  // Handle click event on a day
-  const handleDayClick = (day) => {
-    // Perform navigation or any other action
-    console.log('Clicked on day', day);
-  };
+    getCurrentMonthYear();
+  }, [currentDate]);
 
-  // Handle navigation to previous month
-  const goToPreviousMonth = () => {
-    if (currentMonth === 1) {
-      setCurrentMonth(12);
-      setCurrentYear(currentYear - 1);
-    } else {
-      setCurrentMonth(currentMonth - 1);
-    }
-  };
-
-  // Handle navigation to next month
   const goToNextMonth = () => {
-    if (currentMonth === 12) {
-      setCurrentMonth(1);
-      setCurrentYear(currentYear + 1);
-    } else {
-      setCurrentMonth(currentMonth + 1);
-    }
+    const nextMonthDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 1,
+      1,
+    );
+    setCurrentDate(nextMonthDate);
   };
 
-  // Get the number of days in the current month
-  const getDaysInMonth = (month, year) => {
-    return new Date(year, month, 0).getDate();
+  const goToPreviousMonth = () => {
+    const previousMonthDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() - 1,
+      1,
+    );
+    setCurrentDate(previousMonthDate);
   };
 
-  // Render days of the current month
- const renderDays = () => {
-  const daysInMonth = getDaysInMonth(currentMonth, currentYear);
-  const days = [];
-  const firstDayOfMonth = new Date(currentYear, currentMonth - 1, 1).getDay(); // Get the day of the week for the first day of the month
-  let dayCounter = 1;
-
-  for (let i = 0; i < 6; i++) { // Assuming maximum 6 rows
-    const row = [];
-    for (let j = 0; j < 7; j++) { // 7 days in a week
-      if ((i === 0 && j < firstDayOfMonth) || dayCounter > daysInMonth) {
-        // Render empty cell if it's before the first day of the month or after the last day of the month
-        row.push(
-          <View key={`${i}-${j}`} style={styles.dayContainer} />
+  useEffect(() => {
+    (async () => {
+      const { status } = await Calendar.requestCalendarPermissionsAsync();
+      if (status === "granted") {
+        const calendars = await Calendar.getCalendarsAsync(
+          Calendar.EntityTypes.EVENT,
         );
-      } else {
-        const hasReminders = reminders[dayCounter] && reminders[dayCounter].length > 0;
-        row.push(
-          <TouchableOpacity key={`${i}-${j}`} onPress={() => handleDayClick(dayCounter)}>
-            <View style={styles.dayContainer}>
-              <Text style={styles.dayText}>{dayCounter}</Text>
-              {hasReminders && <Ionicons name="alarm" size={24} color="red" />}
-              {/* Add more icons for other types of reminders */}
-            </View>
-          </TouchableOpacity>
-        );
-        dayCounter++;
+        console.log("Here are all your calendars:");
+        console.log({ calendars });
       }
-    }
-    days.push(<View key={i} style={styles.row}>{row}</View>);
-  }
-
-  return days;
-};
-
+    })();
+  }, []);
   return (
-    <View style={styles.calendarContainer}>
-      {/* Navigation buttons */}
-      <View style={styles.navigationContainer}>
-        <TouchableOpacity onPress={goToPreviousMonth}>
-          <Ionicons name="chevron-back" size={24} color="black" />
-        </TouchableOpacity>
-        <Text>{currentMonth}/{currentYear}</Text>
-        <TouchableOpacity onPress={goToNextMonth}>
-          <Ionicons name="chevron-forward" size={24} color="black" />
-        </TouchableOpacity>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Button title="Previous" onPress={goToPreviousMonth} />
+        <Text>{currentMonthYear}</Text>
+        <Button title="Next" onPress={goToNextMonth} />
       </View>
-
-      {/* Calendar */}
-      <View>
-        {renderDays()}
-      </View>
+      <Button title="Create a new calendar" onPress={createCalendar} />
     </View>
   );
-};
+}
+
+async function getDefaultCalendarSource() {
+  const defaultCalendar = await Calendar.getDefaultCalendarAsync();
+  return defaultCalendar.source;
+}
+
+async function createCalendar() {
+  const defaultCalendarSource =
+    Platform.OS === "ios"
+      ? await getDefaultCalendarSource()
+      : { isLocalAccount: true, name: "Expo Calendar" };
+  const newCalendarID = await Calendar.createCalendarAsync({
+    title: "Expo Calendar",
+    color: "blue",
+    entityType: Calendar.EntityTypes.EVENT,
+    sourceId: defaultCalendarSource.id,
+    source: defaultCalendarSource,
+    name: "internalCalendarName",
+    ownerAccount: "personal",
+    accessLevel: Calendar.CalendarAccessLevel.OWNER,
+  });
+  console.log(`Your new calendar ID is: ${newCalendarID}`);
+}
 
 const styles = StyleSheet.create({
-  calendarContainer: {
-    padding: 10,
-  },
-  navigationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  dayContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 50,
-    height: 50,
-    borderWidth: 1,
-    borderColor: 'gray',
-  },
-  dayText: {
-    fontSize: 18,
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "space-around",
   },
 });
-
-export default Calendar;
