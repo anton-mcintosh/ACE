@@ -6,7 +6,6 @@ import Ionicons from "@expo/vector-icons";
 export default function Button({ label, theme, onPress, children }) {
   if (theme === "primary") {
     return (
-      <View style={styles.buttonContainer}>
         <Pressable
           style={styles.circle}
           onPress={onPress}
@@ -14,12 +13,22 @@ export default function Button({ label, theme, onPress, children }) {
             <Text style={[styles.circleLabel, { color: "#ffffff" }]}>{label}</Text>
           {children}
         </Pressable>
-      </View>
+    );
+  }
+  else if (theme === "secondary") {
+    return (
+        <Pressable
+          style={styles.smallCircle}
+          onPress={onPress}
+        >
+            <Text style={[styles.circleLabel, { color: "#ffffff" }]}>{label}</Text>
+          {children}
+        </Pressable>
     );
   }
   return (
     <View style={styles.buttonContainer}>
-      <Pressable style={styles.circle} onPress={onPress}>
+      <Pressable style={styles.smallCircle} onPress={onPress}>
         <Text style={styles.circleLabel}>{label}</Text>
         {children}
       </Pressable>
@@ -28,16 +37,6 @@ export default function Button({ label, theme, onPress, children }) {
 }
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    width: 320,
-    height: 200,
-    marginHorizontal: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-    flexDirection: 'column',
-    padding: 3,
-  },
   circle: {
     width: 200,
     height: 200,
@@ -50,5 +49,13 @@ const styles = StyleSheet.create({
   circleLabel: {
     color: '#ffffff',
     fontSize: 30,
+  },
+  smallCircle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'orange',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
