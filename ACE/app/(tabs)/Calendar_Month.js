@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Agenda, Calendar } from "react-native-calendars";
 //import * as Calendar from "expo-calendar";
 import Ionicons from "react-native-vector-icons/Ionicons";
