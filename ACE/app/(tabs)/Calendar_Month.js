@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
+  FlatList,
 } from "react-native";
 import { Agenda } from "react-native-calendars";
 import * as Calendar from "expo-calendar";
@@ -66,17 +67,17 @@ const Calendar_Month = () => {
     <SafeAreaView style={styles.container}>
       <Agenda
         showClosingKnob={true}
-        disabledByDefault={true}
         theme={{
-          selectedDayBackgroundColor: "orange",
+          selectedDayBackgroundColor: "green",
           todayBackgroundColor: "orange",
           agendaDayTextColor: "blue",
           agendaTodayColor: "orange",
           agendaBackground: "black",
           calendarBackground: "black",
+          reservationsBackgroundColor: "black",
         }}
         items={calendarEvents}
-        renderItem={(item, isFirst) => (
+        renderItem={(item) => (
           <TouchableOpacity style={styles.item}>
             <Text style={styles.itemText}>{item.name}</Text>
           </TouchableOpacity>
