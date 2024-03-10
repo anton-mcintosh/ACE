@@ -1,22 +1,39 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from "react";
+import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import * as Calendar from "expo-calendar";
+import { AsyncStorage } from "react-native";
 
-const Calendar = () => {
+const CalendarView = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [events, setEvents] = useState([]);
 
-  // Sample data representing reminders on specific days
-  const reminders = {
-    10: ['alarm', 'event'], // Reminders on the 10th day of the month
-    15: ['reminder'], // Reminders on the 15th day of the month
-    // Add more reminders as needed
+  const fetchEvents = async () => {
+    const startDate = new Date(currentYear, currentMonth - 1, 1);
+    const endDate = new Date(currentYear, currentMonth, 0);
+    const { status } = await Calendar.requestCalendarPermissionsAsync();
+    if (status === "granted") {
+      const calendars = await Calendar.getCalendarsAsync();
+      const events = await Calendar.getEventsAsync(
+        calendars[0].id,
+        startDate,
+        endDate,
+      );
+      setEvents(events);
+    } else {
+      console.log("Calendar permission not granted");
+    }
   };
+
+  useEffect(() => {
+    fetchEvents();
+  }, [currentMonth, currentYear]);
 
   // Handle click event on a day
   const handleDayClick = (day) => {
     // Perform navigation or any other action
-    console.log('Clicked on day', day);
+    console.log("Clicked on day", day);
   };
 
   // Handle navigation to previous month
@@ -50,7 +67,7 @@ const Calendar = () => {
     const days = [];
 
     for (let i = 1; i <= daysInMonth; i++) {
-      const hasReminders = reminders[i] && reminders[i].length > 0;
+      const hasReminders = events[i] && events[i].length > 0;
 
       days.push(
         <TouchableOpacity key={i} onPress={() => handleDayClick(i)}>
@@ -59,7 +76,7 @@ const Calendar = () => {
             {hasReminders && <Ionicons name="alarm" size={24} color="red" />}
             {/* Add more icons for other types of reminders */}
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity>,
       );
     }
 
@@ -73,16 +90,16 @@ const Calendar = () => {
         <TouchableOpacity onPress={goToPreviousMonth}>
           <Ionicons name="chevron-back" size={24} color="black" />
         </TouchableOpacity>
-        <Text>{currentMonth}/{currentYear}</Text>
+        <Text>
+          {currentMonth}/{currentYear}
+        </Text>
         <TouchableOpacity onPress={goToNextMonth}>
           <Ionicons name="chevron-forward" size={24} color="black" />
         </TouchableOpacity>
       </View>
 
       {/* Calendar */}
-      <View>
-        {renderDays()}
-      </View>
+      <View>{renderDays()}</View>
     </View>
   );
 };
@@ -92,22 +109,22 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   navigationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 10,
   },
   dayContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     width: 50,
     height: 50,
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: "gray",
   },
   dayText: {
     fontSize: 18,
   },
 });
 
-export default Calendar;
+export default CalendarView;

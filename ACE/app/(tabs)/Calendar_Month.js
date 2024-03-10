@@ -3,28 +3,69 @@ import {
   StyleSheet,
   View,
   Text,
-  Button,
-  Platform,
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
+import { Agenda } from "react-native-calendars";
+import * as Calendar from "expo-calendar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Agenda, Calendar } from "react-native-calendars";
-//import * as Calendar from "expo-calendar";
-import Ionicons from "react-native-vector-icons/Ionicons";
-
-import { agendaItems } from "../mocks/agendaitems";
 
 const Calendar_Month = () => {
-  const today = new Date().toISOString().split("T")[0];
+  const [calendarEvents, setCalendarEvents] = useState({});
+
+  const getStoredCalendarId = async () => {
+    try {
+      const calendarId = await AsyncStorage.getItem("ACE_Calendar");
+      if (calendarId !== null) {
+        console.log("Calendar ID from AsyncStorage:", calendarId);
+        return calendarId;
+      }
+    } catch (error) {
+      console.log("Error retrieving calendar ID from AsyncStorage:", error);
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    const fetchCalendarEvents = async () => {
+      const { status } = await Calendar.requestCalendarPermissionsAsync();
+      if (status === "granted") {
+        const storedCalendarId = await getStoredCalendarId();
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const nextYear = new Date();
+        nextYear.setFullYear(nextYear.getFullYear() + 1);
+        if (storedCalendarId) {
+          const events = await Calendar.getEventsAsync(
+            [storedCalendarId],
+            yesterday,
+            nextYear,
+          );
+          console.log("Calendar events:", events);
+          console.log("Calendar ID: ", storedCalendarId);
+          const formattedEvents = events.reduce((acc, event) => {
+            const date = event.startDate.split("T")[0];
+            if (!acc[date]) {
+              acc[date] = [];
+            }
+            acc[date].push({ name: event.title });
+            return acc;
+          }, {});
+          setCalendarEvents(formattedEvents);
+        } else {
+          console.log("Calendar ID not found in AsyncStorage.");
+        }
+      } else {
+        console.log("Calendar permission not granted.");
+      }
+    };
+    fetchCalendarEvents();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <Agenda
-        selected={today}
-        items={agendaItems.reduce((acc, item) => {
-          acc[item.title] = item.data.map(({ title }) => ({ name: title }));
-          return acc;
-        }, {})}
+        items={calendarEvents}
         renderItem={(item, isFirst) => (
           <TouchableOpacity style={styles.item}>
             <Text style={styles.itemText}>{item.name}</Text>
@@ -34,28 +75,22 @@ const Calendar_Month = () => {
     </SafeAreaView>
   );
 };
+
 export default Calendar_Month;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    justifyContent: "center",
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 35,
-    marginBottom: 5,
-    paddingHorizontal: 10,
+  item: {
+    backgroundColor: "white",
+    borderRadius: 5,
+    padding: 10,
+    marginRight: 10,
+    marginTop: 17,
   },
-  calendar: {
-    marginTop: 30,
-  },
-  agendaList: {
-    flex: 1,
-    marginTop: 20,
+  itemText: {
+    color: "black",
   },
 });
-
