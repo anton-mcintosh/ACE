@@ -65,6 +65,16 @@ const Calendar_Month = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Agenda
+        showClosingKnob={true}
+        disabledByDefault={true}
+        theme={{
+          selectedDayBackgroundColor: "orange",
+          todayBackgroundColor: "orange",
+          agendaDayTextColor: "blue",
+          agendaTodayColor: "orange",
+          agendaBackground: "black",
+          calendarBackground: "black",
+        }}
         items={calendarEvents}
         renderItem={(item, isFirst) => (
           <TouchableOpacity style={styles.item}>
@@ -81,16 +91,16 @@ export default Calendar_Month;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "black",
   },
   item: {
-    backgroundColor: "white",
+    backgroundColor: "black",
     borderRadius: 5,
     padding: 10,
     marginRight: 10,
     marginTop: 17,
   },
   itemText: {
-    color: "black",
+    color: "white",
   },
 });
