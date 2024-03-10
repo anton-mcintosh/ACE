@@ -74,7 +74,7 @@ const Calendar_Month = () => {
           agendaTodayColor: "orange",
           agendaBackground: "black",
           calendarBackground: "black",
-          reservationsBackgroundColor: "black",
+          reservationsBackgroundColor: "black", // Background color of the main part of the screen
         }}
         items={calendarEvents}
         renderItem={(item) => (

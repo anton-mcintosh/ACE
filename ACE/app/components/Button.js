@@ -51,11 +51,12 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
   smallCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: 'orange',
     justifyContent: 'center',
     alignItems: 'center',
+    margin: 30,
   },
 });

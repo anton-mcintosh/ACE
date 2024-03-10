@@ -1,135 +1,167 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Pressable, TextInput } from "react-native";
-import * as Notifications from "expo-notifications";
-import { useEffect, useState, useRef } from "react";
-import { LogBox } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  View,
+  Platform,
+  ScrollView,
+  TextInput,
+} from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { useEffect, useState } from "react";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+import * as Calendar from "expo-calendar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Constants from "expo-constants";
 
-import { useLocalSearchParams, Link, router } from "expo-router";
-import * as Calendar from "expo-calendar"; // Import Calendar module
-
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { styles } from "../styles";
+import { colors } from "../colors";
 import Button from "../components/Button";
 
-LogBox.ignoreLogs(["new NativeEventEmitter"]);
-LogBox.ignoreAllLogs();
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    // set thes in the app.json file
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
-
-export default function AlarmClock() {
-  const notificationListener = useRef();
-  const [notification, setNotification] = useState(false);
-  const [hourr, setHour] = useState("");
-  const [minutee, setMinute] = useState("");
-  const [ampm, setAmpm] = useState("");
-  const [notificationId, setNotificationId] = useState("none");
-
-  useEffect(() => {
-    (async () => {
-      const { status } = await Calendar.requestCalendarPermissionsAsync();
-      if (status === "granted") {
-        const calendars = await Calendar.getCalendarsAsync(
-          Calendar.EntityTypes.EVENT
-        );
-        console.log("Here are all your calendars:");
-        console.log({ calendars });
-      }
-    })();
-    getData();
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-    };
-  }, []);
-
-  async function scheduleNotificationsHandler() {
-    // Your notification scheduling logic remains the same
-  }
-
-  async function turnOffAlarm() {
-    // Your turn off alarm logic remains the same
-  }
-
-  async function storeData(id) {
-    // Your store data logic remains the same
-  }
-
-  async function getData() {
-    // Your get data logic remains the same
-  }
+const Alarm = () => {
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(new Date());
+  const [alarmTitle, setAlarmTitle] = useState("");
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [selectedIntensity, setSelectedIntensity] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Alarm</Text>
-      <TextInput
-        style={styles.textInput}
-        placeholder="Enter hour"
-        value={hourr}
-        onChangeText={(text) => setHour(text)}
-      />
-      <TextInput
-        style={styles.textInput}
-        placeholder="Enter minute"
-        value={minutee}
-        onChangeText={(text) => setMinute(text)}
-      />
-      <TextInput
-        style={styles.textInput}
-        placeholder="Enter am or pm"
-        value={ampm}
-        onChangeText={(text) => setAmpm(text)}
-      />
-      <Pressable style={styles.button} onPress={scheduleNotificationsHandler}>
-        <Text style={styles.buttonText}>Turn on Alarm</Text>
-      </Pressable>
-      <Pressable style={styles.button} onPress={turnOffAlarm}>
-        <Text style={styles.buttonText}>Turn off Alarm</Text>
-      </Pressable>
-    </View>
+    <SafeAreaView style={styles.safeAreaView}>
+      <View style={styles.mainContainer}>
+        <Text style={styles.header}>Alarm</Text>
+      </View>
+      <View style={tempStyles.titleContainer}>
+        <TextInput
+          style={tempStyles.titleInput}
+          placeholderTextColor={colors.defaultText}
+          placeholder="Title your alarm"
+          editable={true}
+        />
+      </View>
+      <View style={tempStyles.rowContainer}>
+        <Text style={tempStyles.rowText}>Time</Text>
+        <TouchableOpacity
+          style={tempStyles.rowSelection}
+          onPress={() => setShowDatePicker(true)}
+        ></TouchableOpacity>
+      </View>
+      <View style={tempStyles.rowContainer}>
+        <Text style={tempStyles.rowText}>Date</Text>
+        <TouchableOpacity
+          style={tempStyles.rowSelection}
+          onPress={() => setShowTimePicker(true)}
+        ></TouchableOpacity>
+      </View>
+      <View style={tempStyles.rowContainer}>
+        <Text style={tempStyles.rowText}>Repeat</Text>
+        <TouchableOpacity
+          style={tempStyles.rowSelection}
+          // onPress={() => setShowTimePicker(true)}
+        ></TouchableOpacity>
+      </View>
+      <View style={tempStyles.rowContainer}>
+        <Text style={tempStyles.rowText}>Snooze</Text>
+        <TouchableOpacity
+          style={tempStyles.rowSelection}
+          // onPress={() => setShowTimePicker(true)}
+        ></TouchableOpacity>
+      </View>
+      <View style={tempStyles.rowContainer}>
+        <Text style={tempStyles.rowText}>Type</Text>
+        <TouchableOpacity
+          style={tempStyles.rowSelection}
+          // onPress={() => setShowTimePicker(true)}
+        ></TouchableOpacity>
+      </View>
+      <Text style={tempStyles.plainText}>Notification Intensity</Text>
+      <View style={tempStyles.rowContainer}>
+        <Button theme="secondary">
+          <FontAwesome5
+            name="volume-down"
+            size={40}
+            color={colors.defaultText}
+          />
+        </Button>
+        <Button theme="secondary">
+          <FontAwesome5
+            name="volume-up"
+            size={40}
+            color={colors.defaultText}
+          ></FontAwesome5>
+        </Button>
+        <Button theme="secondary">
+          <MaterialCommunityIcons
+            name="microphone-settings"
+            size={40}
+            color={colors.defaultText}
+          ></MaterialCommunityIcons>
+        </Button>
+      </View>
+    </SafeAreaView>
   );
-}
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000",
+};
+
+export default Alarm;
+const tempStyles = StyleSheet.create({
+  titleContainer: {
+    width: 350,
+    height: 60,
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    justifyContent: "center",
+    borderWidth: 2,
+    borderRadius: 30,
+    marginTop: 20,
+    marginLeft: 20,
+    backgroundColor: colors.secondaryBackground,
   },
-  header: {
-    color: "orange",
-    margin: 20,
-    fontSize: 60,
-    fontWeight: "bold",
-  },
-  button: {
-    width: "70%",
-    backgroundColor: "green",
-    borderRadius: 18,
-    margin: 15,
-    padding: 5,
-  },
-  buttonText: {
-    color: "white",
-    textAlign: "center",
-    fontSize: 35,
-    fontWeight: "bold",
-  },
-  textInput: {
-    color: "white",
+  titleInput: {
+    flex: 1,
     fontSize: 30,
-    margin: 5,
+    color: colors.defaultText,
+    width: "80%",
+    padding: 10,
+    margin: 10,
+    borderRadius: 5,
+    minHeight: 50,
+    marginLeft: 20,
+  },
+  rowContainer: {
+    width: 400,
+    height: 60,
+    flexDirection: "row",
+    marginLeft: 20,
+    alignItems: "center",
+  },
+  rowText: {
+    width: 100,
+    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+    marginLeft: 20,
+    fontSize: 30,
+    color: colors.defaultText,
+  },
+  rowSelection: {
+    width: 200,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: colors.secondaryBackground,
+    marginTop: 20,
+    borderRadius: 30,
+    borderWidth: 2,
+  },
+  plainText: {
+    fontSize: 30,
+    color: colors.defaultText,
+    marginLeft: 20,
+    marginTop: 40,
+    marginBottom: 40,
   },
 });

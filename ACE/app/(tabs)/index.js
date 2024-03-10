@@ -1,11 +1,12 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import { useLocalSearchParams, Link, router } from "expo-router";
-
+import { useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Button from "../components/Button";
 
 export default function App() {
+  
   return (
     <View style={styles.container}>
       {/* Circles */}
