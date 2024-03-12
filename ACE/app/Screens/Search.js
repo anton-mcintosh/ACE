@@ -8,7 +8,7 @@ export default function SearchBar() {
     
   <View style={style.assembler}>
    <View style={style.Main}>
-    <TextInput placeholder='search' style={style.Input} ></TextInput>
+    <TextInput placeholder='searchhsh' style={style.Input} ></TextInput>
   </View>
     <View style={style.buttonP}>
       <TouchableOpacity>

@@ -1,31 +1,35 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View ,TextInput, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default function SearchBar() {
   return (
-    
-  <View style={style.assembler}>
-   <View style={style.Main}>
-    <TextInput placeholder='search' style={style.Input} ></TextInput>
-  </View>
-    <View style={style.buttonP}>
-      <TouchableOpacity>
-        <FontAwesome style={style.icon} name='search' size={40} marginTop={3} marginLeft={9}/>
-      </TouchableOpacity> 
-    </View>
-   
-   </View>
+    // Wrap the main content in a SafeAreaView with a black background
+    <SafeAreaView style={style.screen}>
+      <View style={style.assembler}>
+        <View style={style.Main}>
+          <TextInput placeholder='search        ' style={style.Input}></TextInput>
+        </View>
+        <View style={style.buttonP}>
+          <TouchableOpacity>
+            <FontAwesome style={style.icon} name='search' size={40} marginTop={3} marginLeft={9}/>
+          </TouchableOpacity> 
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
-const style =StyleSheet.create({
+const style = StyleSheet.create({
+    screen: {
+      flex: 1, // Make it fill the entire screen
+      backgroundColor: '#000', // Set the background color to black
+    },
     assembler:{
       flexDirection:'row',
       marginTop:120,
-      marginLeft:24
-
+      marginLeft:24,
     },
     Main:{
         backgroundColor:'#FFF',
@@ -44,7 +48,6 @@ const style =StyleSheet.create({
       marginLeft:10,
       marginTop:3,
       fontSize:20
-
     },
     buttonP:{
       height:60,
@@ -62,7 +65,5 @@ const style =StyleSheet.create({
     icon:{
       marginRight:  10,
       color:'#fcfcff'
-      
     }
-
-})
+});
