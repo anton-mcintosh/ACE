@@ -9,7 +9,7 @@ export default function SearchBar() {
     <SafeAreaView style={style.screen}>
       <View style={style.assembler}>
         <View style={style.Main}>
-          <TextInput placeholder='search        ' style={style.Input}></TextInput>
+          <TextInput placeholder='search          ' style={style.Input}></TextInput>
         </View>
         <View style={style.buttonP}>
           <TouchableOpacity>
@@ -23,8 +23,8 @@ export default function SearchBar() {
 
 const style = StyleSheet.create({
     screen: {
-      flex: 1, // Make it fill the entire screen
-      backgroundColor: '#000', // Set the background color to black
+      flex: 1, // Make it fill the entire search screen 
+      backgroundColor: '#000', // Set the background color to black ----
     },
     assembler:{
       flexDirection:'row',
