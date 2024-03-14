@@ -1,11 +1,15 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View,ScrollView } from 'react-native';
 import {StatusBar} from 'expo-status-bar';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Button from '../components/Button';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Main() {
   return (
-     <View style={styles.container}>
+<ScrollView>
+<SafeAreaView style={styles.safeArea}>
+
+    <View style={styles.container}>
        {/* Header */}
        <View style={styles.header}>
 
@@ -15,7 +19,7 @@ export default function Main() {
        {/* Circles */}
        <View style={styles.circleContainer}>
          {/* Replace circles with Button component */}
-         <Button label="Quick" theme="primary" onPress={() => alert('Quick button pressed')}>
+         <Button label="Quicbvbvbk" theme="primary" onPress={() => alert('Quick button pressed')}>
            <Ionicons name="flash" size={40} color="#ffffff" />
          </Button>
          <Button label="Event" theme="primary" onPress={() => alert('Event button pressed')}>
@@ -25,18 +29,11 @@ export default function Main() {
            <Ionicons name="alarm" size={40} color="#ffffff" />
          </Button>
        </View>
-
-           {/* Small circle on the left */}
-         <View style={styles.smallCircleLeft}>
-           <Ionicons name="search" size={30} color="#ffffff"/>
-         </View>
-
-           {/* Small circle on the right */}
-         <View style={styles.smallCircleRight}>
-           <Ionicons name="settings" size={30} color="#ffffff"/>
-         </View>
+         
        <StatusBar style="auto" />
      </View>
+</SafeAreaView>
+</ScrollView>
    );
  }
 
@@ -101,6 +98,10 @@ const styles = StyleSheet.create({
     marginRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#000", // Match the background color with the rest of your app
   },
 
 });

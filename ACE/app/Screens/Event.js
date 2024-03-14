@@ -19,6 +19,7 @@ import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import * as Calendar from "expo-calendar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFonts } from "expo-font";
 
 async function getDefaultCalendarSource() {
   const calendars = await Calendar.getCalendarsAsync(
@@ -139,15 +140,34 @@ const Event = () => {
         startDate: date,
         endDate: date,
         time: time,
+        notes: eventDescription,//notes of description
+        location: eventLocation,//location
         title: eventTitle,
+        alarms: selectedTime ? [{
+          relativeOffset: -getAlarmMinutesBeforeStart(selectedTime), // Negative for before the event
+        }] : [],
       });
       alert("Event Created!");
     } catch (e) {
       console.log(e);
     }
+    
   };
   // End of Anton's code
+  const [eventDescription, setEventDescription] = useState("");
+  const [eventLocation, setEventLocation] = useState('');
+  //const [selectedTime, setSelectedTime] = useState(null);
 
+  const getAlarmMinutesBeforeStart = (time) => {
+    switch(time) {
+        case '15 min': return 15;
+        case '30 min': return 30;
+        case '1 hour': return 60;
+        default: return null;
+    }
+};
+
+  
   return (
     <ScrollView>
       <SafeAreaView style={styles.safeArea}>
@@ -172,6 +192,8 @@ const Event = () => {
               placeholder="Describe Event..."
               placeholderTextColor="#bdbebf"
               style={styles.Input1}
+              onChangeText={setEventDescription} // Add this line
+              value={eventDescription} // And this line
             />
           </View>
 
@@ -221,6 +243,8 @@ const Event = () => {
               placeholderTextColor="#FEFEFE"
               style={styles.Input}
               // Add any additional props you need for the location input
+              onChangeText={text => setEventLocation(text)} // Update the eventLocation state
+              value={eventLocation}
             />
             <TouchableOpacity style={styles.locationIconContainer}>
               <SimpleLineIcons
