@@ -105,15 +105,22 @@ const Event = () => {
     })();
   }, []);
   // getStoredCalenderId and storeCalenderId are helper functions to store the calendar ID in the device's storage
-  const getStoredCalenderId = async () => {
+  const getStoredCalendarId = async () => {
     try {
       const calendarId = await AsyncStorage.getItem("ACE_Calendar");
-      if (calendarId !== null) {
-        console.log("calenderId", calendarId);
+      if (calendarId) {
+        console.log("Calendar ID from AsyncStorage:", calendarId);
         return calendarId;
+      } else {
+        // Calendar ID not found, create a new calendar
+        console.log("Calendar ID not found, creating a new one.");
+        const newCalendarId = await createCalendar();
+        await AsyncStorage.setItem("ACE_Calendar", newCalendarId);
+        return newCalendarId;
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log("Error accessing AsyncStorage:", error);
+      return null;
     }
   };
   const storeCalenderId = async (value) => {
@@ -126,26 +133,35 @@ const Event = () => {
   // addNewEvent is the function that creates the event in the calendar
   const addNewEvent = async () => {
     try {
-      // Check if the ACE calendar ID is already stored
-      let calendarId = await getStoredCalenderId();
-      // If the calendar ID is not stored, create the "ACE" calendar and store its ID
-      if (!calendarId) {
-        calendarId = await createCalendar();
-        await storeCalenderId(calendarId);
-      }
-
-      // Use the stored or newly created calendar ID to create the event
+      let calendarId = await getStoredCalendarId();
+      // Attempt to create the event
       const res = await Calendar.createEventAsync(calendarId, {
         startDate: date,
-        endDate: date,
-        time: time,
+        endDate: new Date(date.getTime() + 60000), // Adjust endDate as needed
         title: eventTitle,
       });
+      console.log("Event Created!", res);
       alert("Event Created!");
     } catch (e) {
       console.log(e);
+      if (e.message.includes("could not be found")) {
+        // If the error is because the calendar couldn't be found,
+        // clear the stored ID and try creating a new calendar.
+        try {
+          await AsyncStorage.removeItem("ACE_Calendar");
+          const newCalendarId = await createCalendar();
+          await storeCalenderId(newCalendarId);
+          // Optionally, retry creating the event with the new calendar ID here
+        } catch (error) {
+          console.error("Failed to reset calendar ID:", error);
+        }
+      } else {
+        // Handle other errors
+        alert("Failed to create event. Please try again.");
+      }
     }
   };
+
   // End of Anton's code
 
   return (
