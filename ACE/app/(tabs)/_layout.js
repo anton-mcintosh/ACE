@@ -1,12 +1,13 @@
 import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { colors } from "../colors";
 const TabsLayout = () => {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "black",
+          backgroundColor: colors.defaultBackground,
         },
       }}
     >

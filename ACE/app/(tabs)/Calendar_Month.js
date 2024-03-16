@@ -92,15 +92,17 @@ const Calendar_Month = () => {
               const count = formattedEvents[date].length;
 
               let borderColor = "transparent";
-              if (count > 2 && count <= 5) borderColor = "orange";
-              else if (count > 5) borderColor = "red";
+              let borderRadius = 20;
+              if (count > 2 && count <= 5)
+                (borderColor = "#A3C7D6"), (borderRadius = 8);
+              else if (count > 5) (borderColor = "red"), (borderRadius = 20);
 
               acc[date] = {
                 customStyles: {
                   container: {
                     borderColor: borderColor,
                     borderWidth: 2,
-                    borderRadius: 8,
+                    borderRadius: borderRadius,
                   },
                   text: {
                     color: "white",
@@ -142,9 +144,6 @@ const Calendar_Month = () => {
           theme={{
             selectedDayBackgroundColor: "#363062",
             todayBackgroundColor: "#5C8374",
-            agendaDayTextColor: "blue",
-            agendaTodayColor: "blue",
-            agendaBackground: "blue",
             calendarBackground: colors.defaultBackground,
             reservationsBackgroundColor: "black", // Background color of the main part of the screen
           }}

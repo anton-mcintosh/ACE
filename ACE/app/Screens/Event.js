@@ -19,35 +19,8 @@ import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import * as Calendar from "expo-calendar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-async function getDefaultCalendarSource() {
-  const calendars = await Calendar.getCalendarsAsync(
-    Calendar.EntityTypes.EVENT,
-  );
-  const defaultCalendars = calendars.filter(
-    (each) => each.source.name === "Default",
-  );
-  return defaultCalendars[0].source;
-}
-
-async function createCalendar() {
-  const defaultCalendarSource =
-    Platform.OS === "ios"
-      ? await getDefaultCalendarSource()
-      : { isLocalAccount: true, name: "Expo Calendar" };
-  const newCalendarID = await Calendar.createCalendarAsync({
-    title: "Expo Calendar",
-    color: "blue",
-    entityType: Calendar.EntityTypes.EVENT,
-    sourceId: defaultCalendarSource.id,
-    source: defaultCalendarSource,
-    name: "internalCalendarName",
-    ownerAccount: "personal",
-    accessLevel: Calendar.CalendarAccessLevel.OWNER,
-  });
-  console.log(`Your new calendar ID is: ${newCalendarID}`);
-  return newCalendarID;
-}
+import { router } from "expo-router";
+import { getStoredCalendarId, createCalendar } from "../Modules/CalendarManager";
 
 const Event = () => {
   const [date, setDate] = useState(new Date());
@@ -104,32 +77,7 @@ const Event = () => {
       }
     })();
   }, []);
-  // getStoredCalenderId and storeCalenderId are helper functions to store the calendar ID in the device's storage
-  const getStoredCalendarId = async () => {
-    try {
-      const calendarId = await AsyncStorage.getItem("ACE_Calendar");
-      if (calendarId) {
-        console.log("Calendar ID from AsyncStorage:", calendarId);
-        return calendarId;
-      } else {
-        // Calendar ID not found, create a new calendar
-        console.log("Calendar ID not found, creating a new one.");
-        const newCalendarId = await createCalendar();
-        await AsyncStorage.setItem("ACE_Calendar", newCalendarId);
-        return newCalendarId;
-      }
-    } catch (error) {
-      console.log("Error accessing AsyncStorage:", error);
-      return null;
-    }
-  };
-  const storeCalenderId = async (value) => {
-    try {
-      await AsyncStorage.setItem("ACE_Calendar", value);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  
   // addNewEvent is the function that creates the event in the calendar
   const addNewEvent = async () => {
     try {
@@ -142,6 +90,7 @@ const Event = () => {
       });
       console.log("Event Created!", res);
       alert("Event Created!");
+      router.back();
     } catch (e) {
       console.log(e);
       if (e.message.includes("could not be found")) {
