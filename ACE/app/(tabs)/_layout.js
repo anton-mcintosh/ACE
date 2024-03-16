@@ -1,54 +1,17 @@
 import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import ThemeProvider from "../Contexts/Theme";
+import useTheme from "../Hooks/useTheme";
+import { View } from "react-native";
+import { useState, useEffect } from "react";
+import CustomTabs from "../components/tabs";
+
 const TabsLayout = () => {
+  
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor: "black",
-        },
-      }}
-    >
-      <Tabs.Screen
-        name="Search"
-        options={{
-          headerTitle: "Search",
-          title: "Search",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="search" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="Calendar_Month"
-        options={{
-          headerTitle: "Calendar",
-          title: "Calendar",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="Settings"
-        options={{
-          headerTitle: "Settings",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="index"
-        options={{
-          headerTitle: "Home",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" color={color} size={size} />
-          ),
-        }}
-      />
-    </Tabs>
+    <ThemeProvider>
+      <CustomTabs/>
+    </ThemeProvider>
   );
 };
 

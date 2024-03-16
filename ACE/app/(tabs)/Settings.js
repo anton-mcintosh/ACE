@@ -1,14 +1,22 @@
 /* Settings Screen */
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { useLocalSearchParams, Link, router } from 'expo-router';
-
+import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { Ionicons, Entypo , FontAwesome} from '@expo/vector-icons/';
-import Button from '../components/Button';
+import useTheme from '../Hooks/useTheme.js';
 
 const Settings = () => {
+    const { setTheme, theme } = useTheme();
+    const { color: colors } = useTheme();
+
+    const toggleTheme = (newTheme) => {
+        setTheme(newTheme);
+    };
+
+    const isLightTheme = theme === 'dark';
+
     return (
-        <View style={styles.container}>
+        
+        <View style={{ flex: 1, backgroundColor: colors.background }}>
             <View style={styles.header}>
                 <Text style={styles.text}>Settings</Text>
                 <StatusBar style="auto" />
@@ -18,20 +26,29 @@ const Settings = () => {
                 <FontAwesome name="paint-brush" size={30} color="#ffffff"/>
             </View>
             <View style={styles.buttonRow}>
-                <View style={[styles.circleButton, { backgroundColor: '#000000' }]} >
-                    <Text style={[styles.buttonText, {color: '#FFFFFF'}]}>Dark</Text>
-                </View>
-                <View style={[styles.circleButton, { backgroundColor: '#ADD8E6' }]} >
-                    <Text style={styles.buttonText}>Blue</Text>
-                </View>
-                <View style={[styles.circleButton, { backgroundColor: '#FFB6C1' }]} >
-                    <Text style={styles.buttonText}>Pink</Text>
-                </View>
+                <Pressable
+                    onPress={() => toggleTheme('dark')}>
+                    <View style={[styles.circleButton, { backgroundColor: '#000000' }]} >
+                        <Text style={[styles.buttonText, {color: '#FFFFFF'}]}>Dark</Text>
+                    </View>
+                </Pressable>
+                <Pressable
+                    onPress={() => toggleTheme('blue')}>
+                    <View style={[styles.circleButton, { backgroundColor: '#ADD8E6' }]} >
+                        <Text style={styles.buttonText}>Blue</Text>
+                    </View>
+                </Pressable>
+                <Pressable
+                    onPress={() => toggleTheme('pink')}>
+                    <View style={[styles.circleButton, { backgroundColor: '#FFB6C1' }]} >
+                        <Text style={styles.buttonText}>Pink</Text>
+                    </View>
+                </Pressable>
             </View>
             <View style={styles.wideButtonContainer}>
                 <View style={styles.wideButton}>
                     <Text style={styles.text}>Icons</Text>
-                    <Entypo name="chevron-right" size={30} color="#ffffff"/>
+                    <Entypo name="chevron-right" size={30} color={colors.chevcolor} />
                 </View>
             </View>
         </View>
@@ -51,7 +68,6 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: '#000000',
     },
     text: {
         fontSize: 30,

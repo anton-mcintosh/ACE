@@ -5,10 +5,20 @@ import { useLocalSearchParams, Link, router } from 'expo-router';
 
 import { Ionicons, Entypo , FontAwesome} from '@expo/vector-icons/';
 import Button from '../components/Button';
+import useTheme from '../Hooks/useTheme';
 
 const Settings = () => {
+    const { setTheme, theme } = useTheme();
+    const { color: colors } = useTheme();
+
+    const toggleTheme = (newTheme) => {
+        setTheme(newTheme);
+    };
+
+    const isLightTheme = theme === 'light';
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
             <View style={styles.header}>
                 <Text style={styles.text}>Settings</Text>
                 <StatusBar style="auto" />
@@ -17,16 +27,25 @@ const Settings = () => {
                 <Text style={styles.text}>Theme </Text>
                 <FontAwesome name="paint-brush" size={30} color="#ffffff"/>
             </View>
-            <View style={styles.buttonRow}>
-                <View style={[styles.circleButton, { backgroundColor: '#000000' }]} >
-                    <Text style={[styles.buttonText, {color: '#FFFFFF'}]}>Dark</Text>
-                </View>
-                <View style={[styles.circleButton, { backgroundColor: '#ADD8E6' }]} >
-                    <Text style={styles.buttonText}>Blue</Text>
-                </View>
-                <View style={[styles.circleButton, { backgroundColor: '#FFB6C1' }]} >
-                    <Text style={styles.buttonText}>Pink</Text>
-                </View>
+            <View>
+                <Button
+                    onPress={() => toggleTheme('dark')}>
+                    <View style={[styles.circleButton, { backgroundColor: '#000000' }]} >
+                        <Text style={[styles.buttonText, {color: '#FFFFFF'}]}>Dark</Text>
+                    </View>
+                </Button>
+                <Button
+                    onPress={() => toggleTheme('light')}>
+                    <View style={[styles.circleButton, { backgroundColor: '#ADD8E6' }]} >
+                        <Text style={styles.buttonText}>Blue</Text>
+                    </View>
+                </Button>
+                <Button
+                    onPress={() => toggleTheme('dark')}>
+                    <View style={[styles.circleButton, { backgroundColor: '#FFB6C1' }]} >
+                        <Text style={styles.buttonText}>Pink</Text>
+                    </View>
+                </Button>
             </View>
             <View style={styles.wideButtonContainer}>
                 <View style={styles.wideButton}>

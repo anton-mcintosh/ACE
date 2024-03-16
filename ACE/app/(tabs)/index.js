@@ -4,11 +4,14 @@ import { useLocalSearchParams, Link, router } from "expo-router";
 import { useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Button from "../components/Button";
+import ThemeProvider from "../Contexts/Theme";
+import useTheme from "../Hooks/useTheme";
 
 export default function App() {
+  const { color: colors } = useTheme();
   
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{backgroundColor: colors.background}]}>
       {/* Circles */}
       {/* Replace circles with Button component */}
       <Button
@@ -42,7 +45,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+
     alignItems: "center",
     justifyContent: "center",
     position: "relative", // Make sure the container is relative positioned
@@ -54,26 +57,5 @@ const styles = StyleSheet.create({
     width: 50, // Adjust this width as needed
     height: "100%",
     zIndex: 1, // Make sure it's above other components
-  },
-
-  smallCircleLeft: {
-    position: "absolute",
-    bottom: 50, // Adjust this value as needed
-    left: 20, // Adjust this value as needed
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "orange",
-  },
-  smallCircleRight: {
-    position: "absolute",
-    bottom: 50, // Adjust this value as needed
-    right: 20, // Adjust this value as needed
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "orange",
-    justifyContent: "center",
-    alignItems: "center",
   },
 });

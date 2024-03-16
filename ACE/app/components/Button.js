@@ -1,16 +1,17 @@
 import { StyleSheet, View, Pressable, Text } from 'react-native';
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import Ionicons from "@expo/vector-icons";
+import useTheme from '../Hooks/useTheme';
 
 
 export default function Button({ label, theme, onPress, children }) {
+  const { color: colors } = useTheme()
+
   if (theme === "primary") {
     return (
         <Pressable
-          style={styles.circle}
+          style={[styles.circle, {backgroundColor: colors.buttoncolor}]}
           onPress={onPress}
         >
-            <Text style={[styles.circleLabel, { color: "#ffffff" }]}>{label}</Text>
+            <Text style={[styles.circleLabel, { color: colors.textcolor }]}>{label}</Text>
           {children}
         </Pressable>
     );
@@ -21,7 +22,7 @@ export default function Button({ label, theme, onPress, children }) {
           style={styles.smallCircle}
           onPress={onPress}
         >
-            <Text style={[styles.circleLabel, { color: "#ffffff" }]}>{label}</Text>
+            <Text style={[styles.circleLabel, { color: colors.textcolor }]}>{label}</Text>
           {children}
         </Pressable>
     );

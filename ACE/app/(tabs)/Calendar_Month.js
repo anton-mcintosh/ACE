@@ -10,10 +10,13 @@ import {
 import { Agenda } from "react-native-calendars";
 import * as Calendar from "expo-calendar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import useTheme from "../Hooks/useTheme";
+import { colors } from "../colors";
 
 const Calendar_Month = () => {
+  const { color: colors } = useTheme();
   const [calendarEvents, setCalendarEvents] = useState({});
-
+  
   const getStoredCalendarId = async () => {
     try {
       const calendarId = await AsyncStorage.getItem("ACE_Calendar");
@@ -64,7 +67,7 @@ const Calendar_Month = () => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, {backgroundColor: colors.background}]}>
       <Agenda
         showClosingKnob={true}
         theme={{
@@ -92,7 +95,6 @@ export default Calendar_Month;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black",
   },
   item: {
     backgroundColor: "black",
