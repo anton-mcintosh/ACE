@@ -6,13 +6,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Button from "../components/Button";
 import { useFonts } from 'expo-font';
 
-// const [fontsLoaded] = useFonts({
-//   'RubikGemstones-Regular':require('./assets/fonts/RubikGemstones-Regular.ttf')
-// })
-// if(!fontsLoaded){
-//   return undefined;
-// }
-
 
 export default function App() {
   
@@ -105,6 +98,7 @@ const styles = StyleSheet.create({
   ACEtext: {
     fontSize: 60,
     color: '#ffffff',
+    fontWeight: "bold",
     //fontFamily:"RubikGemstones-Regular"
   },
 });

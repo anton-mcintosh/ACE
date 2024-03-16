@@ -108,7 +108,7 @@ const Event = () => {
                 />
             )}
             <View style={styles.pickerContainer}>
-            <Text style={styles.repeatText}>Reminder :</Text>
+            <Text style={styles.reminderText}>Reminder :              </Text>
   <Picker
     selectedValue={repeat}
     onValueChange={(itemValue, itemIndex) => setRepeat(itemValue)}
@@ -125,7 +125,7 @@ const Event = () => {
 </View>
 
 <View style={styles.row}>
-  <Text style={styles.labelText}>Snooze:</Text>
+  <Text style={styles.snoozeText}>Snooze :                </Text>
   <Picker
     selectedValue={snooze}
     onValueChange={(itemValue, itemIndex) => setSnooze(itemValue)}
@@ -141,7 +141,7 @@ const Event = () => {
   </Picker>
 </View>
             
-      <Text style={styles.notificationintencity}>Notification Intencity:</Text>
+      <Text style={styles.notificationintencitytext}>Notification Intencity:</Text>
       <View style={styles.notificationButtonContainer}>
     <TouchableOpacity 
         onPress={() => handleSelectIntensity('volume-down')} 
@@ -340,13 +340,15 @@ const styles = StyleSheet.create({
           color: '#fff', // White icon color
           fontSize: 24, // Icon size
         },
-        notificationintencity :{
-          fontSize: 22,
+        notificationintencitytext :{
+          fontSize: 25,
          color: '#fff',
-         marginTop: 38, // Space from the microphone icon
+         fontWeight:'bold',
+         marginTop: 20, // Space from the microphone icon
          alignSelf: 'flex-start', // Align to the start of the flex container
          marginLeft: 20, // Match the left margin of the title
         },
+        
         notificationButtonContainer: {
           flexDirection: 'row',
           justifyContent: 'space-around',
@@ -467,11 +469,14 @@ const styles = StyleSheet.create({
        
         picker: {
           color: 'white',
-          flex: 1, // Picker will fill the rest of the horizontal space
+          flex: 1, 
+          alignItems:'center'
+          
         },
-        repeatText: {
-          fontSize: 24,
+        reminderText: {
+          fontSize: 25,
            color: '#fff',
+           fontWeight:'bold',
            marginTop: 10, 
            alignSelf: 'flex-start', // Align to the start of the flex container
            marginLeft: 20, // Match the left margin of the title
@@ -486,11 +491,15 @@ const styles = StyleSheet.create({
             marginVertical: 10,
             paddingHorizontal: 10, // Adjust the padding as needed
           },
-          labelText: {
+          snoozeText: {
+            fontSize: 25,
             color: '#fff',
-            fontSize: 18, // Adjust the size as needed
-            marginRight: 10, // Add some margin to the right of the text
-          },
+            fontWeight:'bold',
+            marginTop: 10, 
+            alignSelf: 'flex-start', // Align to the start of the flex container
+            marginLeft: 20, // Match the left margin of the title
+ 
+           },
           picker: {
             color: 'white',
             flex: 1, // Allows the picker to grow and fill the available space

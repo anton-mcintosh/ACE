@@ -52,7 +52,7 @@ const QuickReminder = () => {
           style={styles.Input}
         ></TextInput>
       </View>
-      <TouchableOpacity>
+      {/* <TouchableOpacity>
         <FontAwesome5
           style={styles.icon}
           name="microphone-alt"
@@ -60,7 +60,7 @@ const QuickReminder = () => {
           marginTop={30}
           marginLeft={-90}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <Text style={styles.remindText}>Remind in:</Text>
       <View style={styles.timeButtonContainer}>
         {["15 min", "30 min", "1 hour"].map((time) => (
@@ -76,7 +76,7 @@ const QuickReminder = () => {
           </TouchableOpacity>
         ))}
       </View>
-      <Text style={styles.notificationintencity}>Notification Intencity:</Text>
+      <Text style={styles.notificationintencitytext}>Notification Intencity:</Text>
       <View style={styles.notificationButtonContainer}>
         {/* Low Volume Button */}
         <TouchableOpacity style={styles.notificationButton2}>
@@ -113,12 +113,12 @@ const QuickReminder = () => {
 export default QuickReminder;
 const styles = StyleSheet.create({
   title: {
-    fontSize: 43, // Assuming a larger font size for the title
+    fontSize: 50, // Assuming a larger font size for the title
     fontWeight: "bold", // Assuming the title is bold
     color: "#fff", // Assuming the title text is white
     marginBottom: 20,
     marginTop: 17,
-    marginLeft: -110, // Spacing below the title
+    marginLeft:0, // Spacing below the title
   },
   container: {
     flex: 1,
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   Main: {
     backgroundColor: "#151515",
     width: 400,
-    height: 130,
+    height: 180,
 
     borderWidth: 2,
     borderColor: "#2A2A2A",
@@ -153,7 +153,8 @@ const styles = StyleSheet.create({
     color: "#fcfcff",
   },
   remindText: {
-    fontSize: 24,
+    fontSize: 25,
+    fontWeight: "bold", // Assuming the title is bold
     color: "#fff",
     marginTop: 15, // Space from the microphone icon
     alignSelf: "flex-start", // Align to the start of the flex container
@@ -191,8 +192,9 @@ const styles = StyleSheet.create({
     color: "#fff", // White icon color
     fontSize: 24, // Icon size
   },
-  notificationintencity: {
-    fontSize: 22,
+  notificationintencitytext: {
+    fontSize: 25,
+    fontWeight: "bold", // Assuming the title is bold
     color: "#fff",
     marginTop: 38, // Space from the microphone icon
     alignSelf: "flex-start", // Align to the start of the flex container

@@ -20,6 +20,8 @@ import * as Calendar from "expo-calendar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts } from "expo-font";
+import Slider from '@react-native-community/slider';
+import { useLocalSearchParams, Link, router } from "expo-router";
 
 async function getDefaultCalendarSource() {
   const calendars = await Calendar.getCalendarsAsync(
@@ -147,7 +149,10 @@ const Event = () => {
           relativeOffset: -getAlarmMinutesBeforeStart(selectedTime), // Negative for before the event
         }] : [],
       });
+      router.back();
+      //navigation.navigate('MainScreen');
       alert("Event Created!");
+
     } catch (e) {
       console.log(e);
     }
@@ -160,9 +165,13 @@ const Event = () => {
 
   const getAlarmMinutesBeforeStart = (time) => {
     switch(time) {
+        case '5 min' : return 5;
+        case '10 min': return 10;
         case '15 min': return 15;
         case '30 min': return 30;
+        case '45 min': return 45;
         case '1 hour': return 60;
+
         default: return null;
     }
 };
@@ -172,7 +181,7 @@ const Event = () => {
     <ScrollView>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Text style={styles.title}>Event setup</Text>
+          <Text style={styles.eventtitle}>Event setup</Text>
           <StatusBar style="auto" />
 
           <View style={styles.Main}>
@@ -253,22 +262,27 @@ const Event = () => {
               />
             </TouchableOpacity>
           </View>
-          <Text style={styles.remindText}>Heads up :</Text>
-          <View style={styles.timeButtonContainer}>
-            {["15 min", "30 min", "1 hour"].map((time) => (
-              <TouchableOpacity
-                key={time}
-                style={[
-                  styles.timeButton,
-                  isSelected(time) && styles.selectedTimeButton, // Add the selected style conditionally
-                ]}
-                onPress={() => handleSetReminder(time)}
-              >
-                <Text style={styles.timeButtonText}>{time}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          <Text style={styles.notificationintencity}>
+          
+        <Text style={styles.HeadsupText}>Heads up:</Text>
+<ScrollView
+  horizontal={true}
+  showsHorizontalScrollIndicator={false}
+  contentContainerStyle={styles.timeButtonContainerScroll}
+>
+  {["5 min", "10 min", "15 min", "30 min", "45 min","1 hour"].map((time, index) => (
+    <TouchableOpacity
+      key={index}
+      style={[
+        styles.timeButton,
+        isSelected(time) && styles.selectedTimeButton,
+      ]}
+      onPress={() => handleSetReminder(time)}
+    >
+      <Text style={styles.timeButtonText}>{time}</Text>
+    </TouchableOpacity>
+  ))}
+</ScrollView>
+          <Text style={styles.notificationintencitytext}>
             Notification Intencity:
           </Text>
           <View style={styles.notificationButtonContainer}>
@@ -337,7 +351,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#000",
   },
-  title: {
+  eventtitle: {
     fontSize: 50,
     fontWeight: "bold",
     color: "#fff",
@@ -440,19 +454,27 @@ const styles = StyleSheet.create({
     textAlign: "right", // Align the text to the right
     marginTop: 12,
   },
-  remindText: {
-    fontSize: 24,
+  HeadsupText: {
+    fontSize: 25,
+    fontWeight: "bold",
     color: "#fff",
-    marginTop: 15, // Space from the microphone icon
+    marginTop: 25, 
     alignSelf: "flex-start", // Align to the start of the flex container
     marginLeft: 20, // Match the left margin of the title
   },
-  timeButtonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around", // This will space your buttons evenly
-    width: "100%", // Use the full width of the container for even spacing
-    marginTop: 20, // Space from the "Remind in:" text
-    fontWeight: "bold",
+  // timeButtonContainer: {
+  //   flexDirection: "row",
+  //   justifyContent: "space-around", // This will space your buttons evenly
+  //   width: "100%", // Use the full width of the container for even spacing
+  //   marginTop: 20, // Space from the "Remind in:" text
+  //   fontWeight: "bold",
+  // },
+  timeButtonContainerScroll: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 13, // Add vertical padding for visual comfort
+    paddingHorizontal: 20, // Add horizontal padding to ensure space on the sides
+    marginTop:15,
   },
   timeButton: {
     backgroundColor: "#D2630F", // Orange background for the buttons
@@ -461,6 +483,7 @@ const styles = StyleSheet.create({
     height: 90, // Height of the button, same as width for circle shape
     justifyContent: "center", // Center the text vertically
     alignItems: "center", // Center the text horizontally
+    marginHorizontal:10,
   },
   timeButtonText: {
     color: "#fff", // White text color
@@ -479,10 +502,11 @@ const styles = StyleSheet.create({
     color: "#fff", // White icon color
     fontSize: 24, // Icon size
   },
-  notificationintencity: {
-    fontSize: 22,
+  notificationintencitytext: {
+    fontSize: 25,
+    fontWeight: 'bold',
     color: "#fff",
-    marginTop: 38, // Space from the microphone icon
+    marginTop: 25, 
     alignSelf: "flex-start", // Align to the start of the flex container
     marginLeft: 20, // Match the left margin of the title
   },
