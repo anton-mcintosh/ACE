@@ -11,14 +11,14 @@ import {
 } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import React, { useState } from "react";
-
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Button from "../components/Button";
-
+import useTheme from "../Hooks/useTheme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const QuickReminder = () => {
+  const { color: colors } = useTheme();
   const [description, setDescription] = useState(""); // State for the reminder description
   const [selectedTime, setSelectedTime] = useState(null);
 
@@ -39,13 +39,16 @@ const QuickReminder = () => {
   };
 
   const isSelected = (time) => {
+
     return selectedTime === time;
   };
+
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Quick Reminder</Text>
+    <View style={[styles.container, {backgroundColor: colors.background}]}>
+      <Text style={[styles.title, {color: colors.textcolor}]}>Quick Reminder</Text>
       <StatusBar style="auto" />
-      <View style={styles.Main}>
+      <View style={[styles.Main, {backgroundColor: colors.background}]}>
         <TextInput
           placeholder="Brief Description...       "
           placeholderTextColor="#FEFEFE"
@@ -110,12 +113,12 @@ const QuickReminder = () => {
     </View>
   );
 };
-export default QuickReminder;
+
+
 const styles = StyleSheet.create({
   title: {
     fontSize: 43, // Assuming a larger font size for the title
     fontWeight: "bold", // Assuming the title is bold
-    color: "#fff", // Assuming the title text is white
     marginBottom: 20,
     marginTop: 17,
     marginLeft: -110, // Spacing below the title
@@ -124,11 +127,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "top",
     alignItems: "center",
-    backgroundColor: "#000", // Assuming the background is black
   },
 
   Main: {
-    backgroundColor: "#151515",
     width: 400,
     height: 130,
 
@@ -263,3 +264,5 @@ const styles = StyleSheet.create({
     borderWidth: 4, // This sets the thickness of the outline
   },
 });
+
+export default QuickReminder;

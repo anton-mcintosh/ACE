@@ -2,6 +2,7 @@ import React from 'react';
 import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import useTheme from '../Hooks/useTheme';
+import IndexStackScreen from './indextabs';
 
 const CustomTabs = () => {
   const { color: colors } = useTheme()

@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
 
 
-const Event = () => {
+const Alarm = () => {
     const [date, setDate] = useState(new Date());
     const [time, setTime] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -188,7 +188,7 @@ const Event = () => {
     );
 }
 
-export default Event;
+export default Alarm;
 
 const styles = StyleSheet.create({
     container: {

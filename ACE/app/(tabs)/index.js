@@ -11,6 +11,7 @@ export default function App() {
   const { color: colors } = useTheme();
   
   return (
+    
     <View style={[styles.container,{backgroundColor: colors.background}]}>
       {/* Circles */}
       {/* Replace circles with Button component */}
@@ -36,8 +37,7 @@ export default function App() {
         <Ionicons name="alarm" size={40} color="#ffffff" />
       </Button>
 
-      {/* StatusBar */}
-      <StatusBar style="auto" />
+
     </View>
   );
 }
