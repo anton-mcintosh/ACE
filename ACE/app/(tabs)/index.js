@@ -1,16 +1,24 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { useLocalSearchParams, Link, router } from "expo-router";
 import { useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Button from "../components/Button";
+import { useFonts } from 'expo-font';
+
 
 export default function App() {
   
   return (
+    <SafeAreaView style={styles.safeArea}>
+
     <View style={styles.container}>
       {/* Circles */}
       {/* Replace circles with Button component */}
+      <View style={styles.header}>
+
+         <Text style={styles.ACEtext}>ACE</Text>
+       </View>
       <Button
         label="Quick"
         theme="primary"
@@ -36,6 +44,7 @@ export default function App() {
       {/* StatusBar */}
       <StatusBar style="auto" />
     </View>
+    </SafeAreaView>
   );
 }
 
@@ -75,5 +84,21 @@ const styles = StyleSheet.create({
     backgroundColor: "orange",
     justifyContent: "center",
     alignItems: "center",
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#000", // Match the background color with the rest of your app
+  },
+  header: {
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 30,
+    marginBottom: 20,
+  },
+  ACEtext: {
+    fontSize: 60,
+    color: '#ffffff',
+    fontWeight: "bold",
+    //fontFamily:"RubikGemstones-Regular"
   },
 });

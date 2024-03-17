@@ -19,8 +19,38 @@ import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import * as Calendar from "expo-calendar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
-import { getStoredCalendarId, createCalendar } from "../Modules/CalendarManager";
+import { useFonts } from "expo-font";
+//import Slider from '@react-native-community/slider';
+import { useLocalSearchParams, Link, router } from "expo-router";
+
+async function getDefaultCalendarSource() {
+  const calendars = await Calendar.getCalendarsAsync(
+    Calendar.EntityTypes.EVENT,
+  );
+  const defaultCalendars = calendars.filter(
+    (each) => each.source.name === "Default",
+  );
+  return defaultCalendars[0].source;
+}
+
+async function createCalendar() {
+  const defaultCalendarSource =
+    Platform.OS === "ios"
+      ? await getDefaultCalendarSource()
+      : { isLocalAccount: true, name: "Expo Calendar" };
+  const newCalendarID = await Calendar.createCalendarAsync({
+    title: "Expo Calendar",
+    color: "blue",
+    entityType: Calendar.EntityTypes.EVENT,
+    sourceId: defaultCalendarSource.id,
+    source: defaultCalendarSource,
+    name: "internalCalendarName",
+    ownerAccount: "personal",
+    accessLevel: Calendar.CalendarAccessLevel.OWNER,
+  });
+  console.log(`Your new calendar ID is: ${newCalendarID}`);
+  return newCalendarID;
+}
 
 const Event = () => {
   const [date, setDate] = useState(new Date());
@@ -77,47 +107,81 @@ const Event = () => {
       }
     })();
   }, []);
-  
+  // getStoredCalenderId and storeCalenderId are helper functions to store the calendar ID in the device's storage
+  const getStoredCalenderId = async () => {
+    try {
+      const calendarId = await AsyncStorage.getItem("ACE_Calendar");
+      if (calendarId !== null) {
+        console.log("calenderId", calendarId);
+        return calendarId;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const storeCalenderId = async (value) => {
+    try {
+      await AsyncStorage.setItem("ACE_Calendar", value);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   // addNewEvent is the function that creates the event in the calendar
   const addNewEvent = async () => {
     try {
-      let calendarId = await getStoredCalendarId();
-      // Attempt to create the event
+      // Check if the ACE calendar ID is already stored
+      let calendarId = await getStoredCalenderId();
+      // If the calendar ID is not stored, create the "ACE" calendar and store its ID
+      if (!calendarId) {
+        calendarId = await createCalendar();
+        await storeCalenderId(calendarId);
+      }
+
+      // Use the stored or newly created calendar ID to create the event
       const res = await Calendar.createEventAsync(calendarId, {
         startDate: date,
-        endDate: new Date(date.getTime() + 60000), // Adjust endDate as needed
+        endDate: date,
+        time: time,
+        notes: eventDescription,//notes of description
+        location: eventLocation,//location
         title: eventTitle,
+        alarms: selectedTime ? [{
+          relativeOffset: -getAlarmMinutesBeforeStart(selectedTime), // Negative for before the event
+        }] : [],
       });
-      console.log("Event Created!", res);
-      alert("Event Created!");
       router.back();
+      //navigation.navigate('MainScreen');
+      alert("Event Created!");
+
     } catch (e) {
       console.log(e);
-      if (e.message.includes("could not be found")) {
-        // If the error is because the calendar couldn't be found,
-        // clear the stored ID and try creating a new calendar.
-        try {
-          await AsyncStorage.removeItem("ACE_Calendar");
-          const newCalendarId = await createCalendar();
-          await storeCalenderId(newCalendarId);
-          // Optionally, retry creating the event with the new calendar ID here
-        } catch (error) {
-          console.error("Failed to reset calendar ID:", error);
-        }
-      } else {
-        // Handle other errors
-        alert("Failed to create event. Please try again.");
-      }
     }
+    
   };
-
   // End of Anton's code
+  const [eventDescription, setEventDescription] = useState("");
+  const [eventLocation, setEventLocation] = useState('');
+  //const [selectedTime, setSelectedTime] = useState(null);
 
+  const getAlarmMinutesBeforeStart = (time) => {
+    switch(time) {
+        case '5 min' : return 5;
+        case '10 min': return 10;
+        case '15 min': return 15;
+        case '30 min': return 30;
+        case '45 min': return 45;
+        case '1 hour': return 60;
+
+        default: return null;
+    }
+};
+
+  
   return (
     <ScrollView>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <Text style={styles.title}>Event setup</Text>
+          <Text style={styles.eventtitle}>Event setup</Text>
           <StatusBar style="auto" />
 
           <View style={styles.Main}>
@@ -137,6 +201,8 @@ const Event = () => {
               placeholder="Describe Event..."
               placeholderTextColor="#bdbebf"
               style={styles.Input1}
+              onChangeText={setEventDescription} // Add this line
+              value={eventDescription} // And this line
             />
           </View>
 
@@ -186,6 +252,8 @@ const Event = () => {
               placeholderTextColor="#FEFEFE"
               style={styles.Input}
               // Add any additional props you need for the location input
+              onChangeText={text => setEventLocation(text)} // Update the eventLocation state
+              value={eventLocation}
             />
             <TouchableOpacity style={styles.locationIconContainer}>
               <SimpleLineIcons
@@ -194,22 +262,27 @@ const Event = () => {
               />
             </TouchableOpacity>
           </View>
-          <Text style={styles.remindText}>Heads up :</Text>
-          <View style={styles.timeButtonContainer}>
-            {["15 min", "30 min", "1 hour"].map((time) => (
-              <TouchableOpacity
-                key={time}
-                style={[
-                  styles.timeButton,
-                  isSelected(time) && styles.selectedTimeButton, // Add the selected style conditionally
-                ]}
-                onPress={() => handleSetReminder(time)}
-              >
-                <Text style={styles.timeButtonText}>{time}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          <Text style={styles.notificationintencity}>
+          
+        <Text style={styles.HeadsupText}>Heads up:</Text>
+<ScrollView
+  horizontal={true}
+  showsHorizontalScrollIndicator={false}
+  contentContainerStyle={styles.timeButtonContainerScroll}
+>
+  {["5 min", "10 min", "15 min", "30 min", "45 min","1 hour"].map((time, index) => (
+    <TouchableOpacity
+      key={index}
+      style={[
+        styles.timeButton,
+        isSelected(time) && styles.selectedTimeButton,
+      ]}
+      onPress={() => handleSetReminder(time)}
+    >
+      <Text style={styles.timeButtonText}>{time}</Text>
+    </TouchableOpacity>
+  ))}
+</ScrollView>
+          <Text style={styles.notificationintencitytext}>
             Notification Intencity:
           </Text>
           <View style={styles.notificationButtonContainer}>
@@ -278,7 +351,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#000",
   },
-  title: {
+  eventtitle: {
     fontSize: 50,
     fontWeight: "bold",
     color: "#fff",
@@ -381,19 +454,27 @@ const styles = StyleSheet.create({
     textAlign: "right", // Align the text to the right
     marginTop: 12,
   },
-  remindText: {
-    fontSize: 24,
+  HeadsupText: {
+    fontSize: 25,
+    fontWeight: "bold",
     color: "#fff",
-    marginTop: 15, // Space from the microphone icon
+    marginTop: 25, 
     alignSelf: "flex-start", // Align to the start of the flex container
     marginLeft: 20, // Match the left margin of the title
   },
-  timeButtonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around", // This will space your buttons evenly
-    width: "100%", // Use the full width of the container for even spacing
-    marginTop: 20, // Space from the "Remind in:" text
-    fontWeight: "bold",
+  // timeButtonContainer: {
+  //   flexDirection: "row",
+  //   justifyContent: "space-around", // This will space your buttons evenly
+  //   width: "100%", // Use the full width of the container for even spacing
+  //   marginTop: 20, // Space from the "Remind in:" text
+  //   fontWeight: "bold",
+  // },
+  timeButtonContainerScroll: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 13, // Add vertical padding for visual comfort
+    paddingHorizontal: 20, // Add horizontal padding to ensure space on the sides
+    marginTop:15,
   },
   timeButton: {
     backgroundColor: "#D2630F", // Orange background for the buttons
@@ -402,6 +483,7 @@ const styles = StyleSheet.create({
     height: 90, // Height of the button, same as width for circle shape
     justifyContent: "center", // Center the text vertically
     alignItems: "center", // Center the text horizontally
+    marginHorizontal:10,
   },
   timeButtonText: {
     color: "#fff", // White text color
@@ -420,10 +502,11 @@ const styles = StyleSheet.create({
     color: "#fff", // White icon color
     fontSize: 24, // Icon size
   },
-  notificationintencity: {
-    fontSize: 22,
+  notificationintencitytext: {
+    fontSize: 25,
+    fontWeight: 'bold',
     color: "#fff",
-    marginTop: 38, // Space from the microphone icon
+    marginTop: 25, 
     alignSelf: "flex-start", // Align to the start of the flex container
     marginLeft: 20, // Match the left margin of the title
   },
