@@ -19,9 +19,6 @@ import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import * as Calendar from "expo-calendar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFonts } from "expo-font";
-import Slider from '@react-native-community/slider';
-import { useLocalSearchParams, Link, router } from "expo-router";
 
 async function getDefaultCalendarSource() {
   const calendars = await Calendar.getCalendarsAsync(
@@ -107,56 +104,25 @@ const Event = () => {
       }
     })();
   }, []);
-  // getStoredCalenderId and storeCalenderId are helper functions to store the calendar ID in the device's storage
-  const getStoredCalenderId = async () => {
-    try {
-      const calendarId = await AsyncStorage.getItem("ACE_Calendar");
-      if (calendarId !== null) {
-        console.log("calenderId", calendarId);
-        return calendarId;
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  const storeCalenderId = async (value) => {
-    try {
-      await AsyncStorage.setItem("ACE_Calendar", value);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  
   // addNewEvent is the function that creates the event in the calendar
   const addNewEvent = async () => {
     try {
-      // Check if the ACE calendar ID is already stored
-      let calendarId = await getStoredCalenderId();
-      // If the calendar ID is not stored, create the "ACE" calendar and store its ID
-      if (!calendarId) {
-        calendarId = await createCalendar();
-        await storeCalenderId(calendarId);
-      }
-
-      // Use the stored or newly created calendar ID to create the event
+      let calendarId = await getStoredCalendarId();
+      // Attempt to create the event
       const res = await Calendar.createEventAsync(calendarId, {
         startDate: date,
         endDate: date,
         time: time,
-        notes: eventDescription,//notes of description
-        location: eventLocation,//location
         title: eventTitle,
         alarms: selectedTime ? [{
           relativeOffset: -getAlarmMinutesBeforeStart(selectedTime), // Negative for before the event
         }] : [],
       });
-      router.back();
-      //navigation.navigate('MainScreen');
       alert("Event Created!");
-
     } catch (e) {
       console.log(e);
     }
-    
   };
   // End of Anton's code
   const [eventDescription, setEventDescription] = useState("");
