@@ -22,6 +22,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts } from "expo-font";
 //import Slider from '@react-native-community/slider';
 import { useLocalSearchParams, Link, router } from "expo-router";
+import useTheme from "../Hooks/useTheme";
 
 async function getDefaultCalendarSource() {
   const calendars = await Calendar.getCalendarsAsync(
@@ -60,6 +61,7 @@ const Event = () => {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedIntensity, setSelectedIntensity] = useState(null);
   //const [selectedTimeReminder, setSelectedTimeReminder] = useState(null);
+  const { color: colors } = useTheme();
 
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -179,27 +181,27 @@ const Event = () => {
   
   return (
     <ScrollView>
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={[styles.safeArea, {backgroundColor: colors.background}]}>
         <View style={styles.container}>
-          <Text style={styles.eventtitle}>Event setup</Text>
+          <Text style={[styles.eventtitle, {color: colors.chevcolor}]}>Event setup</Text>
           <StatusBar style="auto" />
 
-          <View style={styles.Main}>
+          <View style={[styles.Main, {backgroundColor: colors.descback}]}>
             <TextInput
               onChangeText={setEventTitle} //Anton added these to store the event title in the state
               value={eventTitle}
               // Will add more props here
               placeholder="Title"
-              placeholderTextColor="#bdbebf"
-              style={styles.Input}
+              placeholderTextColor= {colors.chevcolor}
+              style={[styles.Input, {}]}
               editable={true}
             />
           </View>
 
-          <View style={styles.Main1}>
+          <View style={[styles.Main1, {backgroundColor: colors.descback}]}>
             <TextInput
               placeholder="Describe Event..."
-              placeholderTextColor="#bdbebf"
+              placeholderTextColor= {colors.chevcolor}
               style={styles.Input1}
               onChangeText={setEventDescription} // Add this line
               value={eventDescription} // And this line
@@ -209,21 +211,21 @@ const Event = () => {
           <View style={styles.dateChangeContainer}>
             <TouchableOpacity
               onPress={() => setShowDatePicker(true)}
-              style={styles.changeButton}
+              style={[styles.changeButton, {backgroundColor: colors.buttoncolor}]}
             >
               <Text style={styles.changeButtonText}>Change Date</Text>
             </TouchableOpacity>
-            <Text style={styles.dateText}>{date.toLocaleDateString()}</Text>
+            <Text style={[styles.dateText, {color: colors.chevcolor}]}>{date.toLocaleDateString()}</Text>
           </View>
 
           <View style={styles.timeChangeContainer}>
             <TouchableOpacity
               onPress={() => setShowTimePicker(true)}
-              style={styles.changeButton}
+              style={[styles.changeButton, {backgroundColor: colors.buttoncolor}]}
             >
               <Text style={styles.changeButtonText}>Change Time</Text>
             </TouchableOpacity>
-            <Text style={styles.timeText}>{time.toLocaleTimeString()}</Text>
+            <Text style={[styles.timeText, {color: colors.chevcolor}]}>{time.toLocaleTimeString()}</Text>
           </View>
           {showDatePicker && (
             <DateTimePicker
@@ -246,10 +248,10 @@ const Event = () => {
               onChange={onChangeTime}
             />
           )}
-          <View style={styles.Main}>
+          <View style={[styles.Main, {backgroundColor: colors.descback}]}>
             <TextInput
               placeholder="Location"
-              placeholderTextColor="#FEFEFE"
+              placeholderTextColor={colors.chevcolor}
               style={styles.Input}
               // Add any additional props you need for the location input
               onChangeText={text => setEventLocation(text)} // Update the eventLocation state
@@ -258,12 +260,12 @@ const Event = () => {
             <TouchableOpacity style={styles.locationIconContainer}>
               <SimpleLineIcons
                 name="location-pin"
-                style={styles.locationIcon}
+                style={[styles.locationIcon, {color: colors.chevcolor}]}
               />
             </TouchableOpacity>
           </View>
           
-        <Text style={styles.HeadsupText}>Heads up:</Text>
+        <Text style={[styles.HeadsupText, {color: colors.chevcolor}]}>Heads up:</Text>
 <ScrollView
   horizontal={true}
   showsHorizontalScrollIndicator={false}
@@ -274,7 +276,7 @@ const Event = () => {
       key={index}
       style={[
         styles.timeButton,
-        isSelected(time) && styles.selectedTimeButton,
+        isSelected(time) && styles.selectedTimeButton, {backgroundColor: colors.buttoncolor}
       ]}
       onPress={() => handleSetReminder(time)}
     >
@@ -282,14 +284,14 @@ const Event = () => {
     </TouchableOpacity>
   ))}
 </ScrollView>
-          <Text style={styles.notificationintencitytext}>
+          <Text style={[styles.notificationintencitytext, {color: colors.chevcolor}]}>
             Notification Intencity:
           </Text>
           <View style={styles.notificationButtonContainer}>
             <TouchableOpacity
               onPress={() => handleSelectIntensity("volume-down")}
               style={[
-                styles.notificationButton2,
+                styles.notificationButton2, {backgroundColor: colors.buttoncolor}, 
                 selectedIntensity === "volume-down" &&
                   styles.selectedIntensityButton,
               ]}
@@ -303,7 +305,7 @@ const Event = () => {
             <TouchableOpacity
               onPress={() => handleSelectIntensity("volume-up")}
               style={[
-                styles.notificationButton2,
+                styles.notificationButton2,  {backgroundColor: colors.buttoncolor}, 
                 selectedIntensity === "volume-up" &&
                   styles.selectedIntensityButton,
               ]}
@@ -314,7 +316,7 @@ const Event = () => {
             <TouchableOpacity
               onPress={() => handleSelectIntensity("microphone-settings")}
               style={[
-                styles.notificationButton2,
+                styles.notificationButton2,  {backgroundColor: colors.buttoncolor}, 
                 selectedIntensity === "microphone-settings" &&
                   styles.selectedIntensityButton,
               ]}
@@ -332,7 +334,7 @@ const Event = () => {
             </TouchableOpacity>
 
             {/* Save Changes Button */}
-            <TouchableOpacity style={styles.saveButton} onPress={addNewEvent}>
+            <TouchableOpacity style={[styles.saveButton,  {backgroundColor: colors.buttoncolor}]} onPress={addNewEvent}>
               <Text style={styles.actionButtonText}>Save Changes</Text>
             </TouchableOpacity>
           </View>
@@ -349,7 +351,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#000",
   },
   eventtitle: {
     fontSize: 50,
@@ -360,7 +361,6 @@ const styles = StyleSheet.create({
     marginLeft: 90,
   },
   Main: {
-    backgroundColor: "#151515",
     width: 400,
     height: 60,
     borderWidth: 2,
@@ -386,11 +386,9 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginTop: 0,
     fontSize: 20,
-    color: "#fff",
     minHeight: 40, // Ensure this is high enough for easy tapping
   },
   Main1: {
-    backgroundColor: "#151515",
     width: 400,
     height: 130,
     marginTop: 25,
@@ -415,7 +413,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   changeButton: {
-    backgroundColor: "#d1630c", // Button color
     paddingVertical: 15, // Increases height
     paddingHorizontal: 20, // Increases width
     borderRadius: 20, // Higher value for more pronounced curves
@@ -437,7 +434,6 @@ const styles = StyleSheet.create({
   },
 
   dateText: {
-    color: "#fff",
     fontSize: 30,
     marginRight: 70, // Adjust the gap between the date and time by changing this value
     flex: 1, // Take up the remaining space
@@ -446,7 +442,6 @@ const styles = StyleSheet.create({
   },
 
   timeText: {
-    color: "#fff",
     fontSize: 30,
     marginRight: 50,
     // Add marginLeft if you need more space on the left side as well
@@ -574,12 +569,10 @@ const styles = StyleSheet.create({
   },
 
   selectedTimeButton: {
-    borderColor: "#ffff", // This will be the color of the outline
     borderWidth: 4, // This sets the thickness of the outline
   },
   safeArea: {
     flex: 1,
-    backgroundColor: "#000", // Match the background color with the rest of your app
   },
   selectedIntensityButton: {
     borderColor: "white",
@@ -591,7 +584,6 @@ const styles = StyleSheet.create({
   },
   locationIcon: {
     fontSize: 24, // Size of the location icon
-    color: "#FEFEFE", // Color of the location icon, assumed to be white
   },
   dateChangeContainer: {
     flexDirection: "row",

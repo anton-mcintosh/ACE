@@ -12,9 +12,9 @@ export default function App() {
   const { color: colors } = useTheme();
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, {backgroundColor: colors.background}]}>
 
-    <View style={[styles.container,{backgroundColor: colors.background}]}>
+    <View style={[styles.container, {backgroundColor: colors.background}]}>
       {/* Circles */}
       {/* Replace circles with Button component */}
       <View style={styles.header}>
@@ -89,7 +89,6 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    backgroundColor: "#000", // Match the background color with the rest of your app
   },
   header: {
     alignItems: 'center',

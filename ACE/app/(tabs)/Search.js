@@ -12,6 +12,7 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import * as Calendar from "expo-calendar";
+import useTheme from "../Hooks/useTheme";
 
 // const fetchEvents = async () => {
 //   const { status } = await Calendar.requestCalendarPermissionsAsync();
@@ -63,7 +64,9 @@ const fetchEvents = async () => {
   return events;
 };
 
+
 export default function SearchBar() {
+  const { color: colors } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
@@ -76,7 +79,7 @@ export default function SearchBar() {
   };
 
   return (
-    <SafeAreaView style={style.screen}>
+    <SafeAreaView style={[style.screen, {backgroundColor: colors.background}]}>
       <View style={style.assembler}>
         <View style={style.Main}>
           <TextInput
@@ -97,9 +100,9 @@ export default function SearchBar() {
           </TouchableOpacity>
         </View>
       </View>
-      <ScrollView style={style.resultsContainer}>
+      <ScrollView style={[style.resultsContainer]}>
         {searchResults.map((event, index) => (
-          <Text key={index} style={style.resultText}>
+          <Text key={index} style={[style.resultText, {color: colors.chevcolor}]}>
             {event.title}
           </Text>
         ))}

@@ -28,12 +28,6 @@ const Settings = () => {
                     <Text style={styles.buttonText}>Pink</Text>
                 </View>
             </View>
-            <View style={styles.wideButtonContainer}>
-                <View style={styles.wideButton}>
-                    <Text style={styles.text}>Icons</Text>
-                    <Entypo name="chevron-right" size={30} color="#ffffff"/>
-                </View>
-            </View>
         </View>
     );
 }

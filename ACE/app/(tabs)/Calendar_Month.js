@@ -19,6 +19,7 @@ import * as Calendar from "expo-calendar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { colors } from "../colors";
 import EditModal from "../Modules/EditModal";
+import useTheme from "../Hooks/useTheme";
 
 const Calendar_Month = () => {
   const [calendarEvents, setCalendarEvents] = useState({});
@@ -29,6 +30,7 @@ const Calendar_Month = () => {
   const [updatedMarkedDates, setUpdatedMarkedDates] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState({}); // State for the selected event
+  const { color: colors } = useTheme();
 
   const onEventPress = (event) => {
     setSelectedEvent(event);
