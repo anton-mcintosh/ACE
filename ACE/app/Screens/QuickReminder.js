@@ -1,5 +1,6 @@
 /*Quick Reminder Screen*/
 import { StatusBar } from "expo-status-bar";
+import { Router } from "expo-router";
 //import { StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, Link, router } from "expo-router";
 import {
@@ -10,15 +11,18 @@ import {
   TouchableOpacity,
 } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
+import * as Calendar from "expo-calendar";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import Button from "../components/Button";
+import {
+  getStoredCalendarId,
+  createCalendar,
+} from "../Modules/CalendarManager";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const QuickReminder = () => {
+  const [title, setTitle] = useState(""); // State for the reminder title
   const [description, setDescription] = useState(""); // State for the reminder description
   const [selectedTime, setSelectedTime] = useState(null);
 
@@ -37,7 +41,34 @@ const QuickReminder = () => {
       date: new Date(Date.now() + 1000 * 60 * 1), // 1 minutes from now
     });
   };
-
+  useEffect(() => {
+    (async () => {
+      const { status } = await Calendar.requestCalendarPermissionsAsync();
+      if (status === "granted") {
+        const calendars = await Calendar.getCalendarsAsync(
+          calendars.EntityTypes.EVENT,
+        );
+        console.log("Here are all your calendars:");
+        console.log({ calendars });
+      }
+    })();
+  }, []);
+  const addnewReminder = async () => {
+    try {
+      let calendarId = await getStoredCalendarId();
+      const res = await Calendar.createEventAsync(calendarId, {
+        title: "Quick Reminder",
+        description: description,
+        startDate: new Date(),
+        endDate: new Date(),
+        alarms: selectedTime ? [{ relativeOffset: selectedTime }] : [],
+      });
+      alert("Event added successfully");
+      router.back();
+    } catch (e) {
+      console.log(e);
+    }
+  };
   const isSelected = (time) => {
     return selectedTime === time;
   };
@@ -52,7 +83,7 @@ const QuickReminder = () => {
           style={styles.Input}
         ></TextInput>
       </View>
-      <TouchableOpacity>
+      {/* <TouchableOpacity>
         <FontAwesome5
           style={styles.icon}
           name="microphone-alt"
@@ -60,7 +91,7 @@ const QuickReminder = () => {
           marginTop={30}
           marginLeft={-90}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <Text style={styles.remindText}>Remind in:</Text>
       <View style={styles.timeButtonContainer}>
         {["15 min", "30 min", "1 hour"].map((time) => (
@@ -76,7 +107,9 @@ const QuickReminder = () => {
           </TouchableOpacity>
         ))}
       </View>
-      <Text style={styles.notificationintencity}>Notification Intencity:</Text>
+      <Text style={styles.notificationintencitytext}>
+        Notification Intensity:
+      </Text>
       <View style={styles.notificationButtonContainer}>
         {/* Low Volume Button */}
         <TouchableOpacity style={styles.notificationButton2}>
@@ -104,7 +137,9 @@ const QuickReminder = () => {
 
         {/* Save Changes Button */}
         <TouchableOpacity style={styles.saveButton} onPress={handleSetReminder}>
-          <Text style={styles.actionButtonText}>Save Changes</Text>
+          <Text style={styles.actionButtonText} onPress={addnewReminder}>
+            Save Changes
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -113,12 +148,12 @@ const QuickReminder = () => {
 export default QuickReminder;
 const styles = StyleSheet.create({
   title: {
-    fontSize: 43, // Assuming a larger font size for the title
+    fontSize: 50, // Assuming a larger font size for the title
     fontWeight: "bold", // Assuming the title is bold
     color: "#fff", // Assuming the title text is white
     marginBottom: 20,
     marginTop: 17,
-    marginLeft: -110, // Spacing below the title
+    marginLeft: 0, // Spacing below the title
   },
   container: {
     flex: 1,
@@ -130,7 +165,7 @@ const styles = StyleSheet.create({
   Main: {
     backgroundColor: "#151515",
     width: 400,
-    height: 130,
+    height: 180,
 
     borderWidth: 2,
     borderColor: "#2A2A2A",
@@ -153,7 +188,8 @@ const styles = StyleSheet.create({
     color: "#fcfcff",
   },
   remindText: {
-    fontSize: 24,
+    fontSize: 25,
+    fontWeight: "bold", // Assuming the title is bold
     color: "#fff",
     marginTop: 15, // Space from the microphone icon
     alignSelf: "flex-start", // Align to the start of the flex container
@@ -191,8 +227,9 @@ const styles = StyleSheet.create({
     color: "#fff", // White icon color
     fontSize: 24, // Icon size
   },
-  notificationintencity: {
-    fontSize: 22,
+  notificationintencitytext: {
+    fontSize: 25,
+    fontWeight: "bold", // Assuming the title is bold
     color: "#fff",
     marginTop: 38, // Space from the microphone icon
     alignSelf: "flex-start", // Align to the start of the flex container
@@ -263,3 +300,4 @@ const styles = StyleSheet.create({
     borderWidth: 4, // This sets the thickness of the outline
   },
 });
+

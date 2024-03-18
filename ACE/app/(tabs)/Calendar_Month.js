@@ -18,6 +18,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import * as Calendar from "expo-calendar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { colors } from "../colors";
+import EditModal from "../Modules/EditModal";
 
 const Calendar_Month = () => {
   const [calendarEvents, setCalendarEvents] = useState({});
@@ -26,7 +27,17 @@ const Calendar_Month = () => {
   ); // Format: "YYYY-MM-DD"
   const [markedDates, setMarkedDates] = useState({});
   const [updatedMarkedDates, setUpdatedMarkedDates] = useState({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState({}); // State for the selected event
 
+  const onEventPress = (event) => {
+    setSelectedEvent(event);
+    setIsModalVisible(true);
+  };
+
+  const onModalClose = () => {
+    setIsModalVisible(false);
+  };
   const getStoredCalendarId = async () => {
     try {
       const calendarId = await AsyncStorage.getItem("ACE_Calendar");
@@ -127,6 +138,7 @@ const Calendar_Month = () => {
     fetchCalendarEvents();
   }, []);
   console.log("Sample event dates:", Object.keys(calendarEvents).slice(0, 3));
+  console.log("Selected Event: ", selectedEvent);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -154,17 +166,33 @@ const Calendar_Month = () => {
         />
         <FlatList
           data={calendarEvents[selectedDate] || []} // Correctly reference events for the selected date
-          renderItem={({ item }) => (
-            <ListItem bottomDivider containerStyle={styles.item}>
-              <FontAwesome5 name="calendar-alt" size={24} color="white" />
-              <ListItem.Content>
-                <ListItem.Title style={styles.itemText}>
-                  {item.name}
-                </ListItem.Title>
-              </ListItem.Content>
-              <ListItem.Chevron />
-            </ListItem>
-          )}
+          renderItem={({ item }) => {
+            // Determine the icon based on the event title
+            let iconName = "calendar-alt"; // Default icon
+            let iconColor = "white"; // Default color
+
+            if (item.name.includes("Quick Reminder")) {
+              iconName = "bolt"; // Change to lightning bolt icon for "Quick Reminder" events
+              iconColor = "#ffd700"; // Optional: Change the icon color for specific events
+            } else if (item.name.includes("Alarm")) {
+              iconName = "bell"; // Change to "Users" icon for "Meeting" events
+              iconColor = "#00bfff"; // Optional: Change the icon color for specific events
+            }
+
+            return (
+              <TouchableOpacity onPress={() => onEventPress(item)}>
+                <ListItem bottomDivider containerStyle={styles.item}>
+                  <FontAwesome5 name={iconName} size={24} color={iconColor} />
+                  <ListItem.Content>
+                    <ListItem.Title style={styles.itemText}>
+                      {item.name}
+                    </ListItem.Title>
+                  </ListItem.Content>
+                  <ListItem.Chevron />
+                </ListItem>
+              </TouchableOpacity>
+            );
+          }}
           ListEmptyComponent={
             <View style={styles.noDataContainer}>
               <Text style={styles.noDataText}>No Events Found</Text>
@@ -175,6 +203,11 @@ const Calendar_Month = () => {
           extraData={calendarEvents}
         />
       </CalendarProvider>
+      <EditModal
+        isVisible={isModalVisible}
+        onClose={onModalClose}
+        eventId={selectedEvent.id}
+      />
     </SafeAreaView>
   );
 };
