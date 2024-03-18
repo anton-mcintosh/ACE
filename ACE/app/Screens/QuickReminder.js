@@ -20,11 +20,13 @@ import {
 } from "../Modules/CalendarManager";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import useTheme from "../Hooks/useTheme";
 
 const QuickReminder = () => {
   const [title, setTitle] = useState(""); // State for the reminder title
   const [description, setDescription] = useState(""); // State for the reminder description
   const [selectedTime, setSelectedTime] = useState(null);
+  const { color: colors } = useTheme();
 
   const handleSetReminder = async () => {
     // setSelectedTime(time);
@@ -73,13 +75,13 @@ const QuickReminder = () => {
     return selectedTime === time;
   };
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Quick Reminder</Text>
+    <View style={[styles.container, {backgroundColor: colors.background}]}>
+      <Text style={[styles.title, {color: colors.chevcolor}]}>Quick Reminder</Text>
       <StatusBar style="auto" />
-      <View style={styles.Main}>
+      <View style={[styles.Main, {backgroundColor: colors.descback}]}>
         <TextInput
           placeholder="Brief Description...       "
-          placeholderTextColor="#FEFEFE"
+          placeholderTextColor= {colors.chevcolor}
           style={styles.Input}
         ></TextInput>
       </View>
@@ -92,37 +94,37 @@ const QuickReminder = () => {
           marginLeft={-90}
         />
       </TouchableOpacity> */}
-      <Text style={styles.remindText}>Remind in:</Text>
+      <Text style={[styles.remindText, {color: colors.chevcolor}]}>Remind in:</Text>
       <View style={styles.timeButtonContainer}>
         {["15 min", "30 min", "1 hour"].map((time) => (
           <TouchableOpacity
             key={time}
             style={[
               styles.timeButton,
-              isSelected(time) && styles.selectedTimeButton, // Add the selected style conditionally
+              isSelected(time) && styles.selectedTimeButton, {backgroundColor: colors.buttoncolor} // Add the selected style conditionally
             ]}
             onPress={() => handleSetReminder(time)}
           >
-            <Text style={styles.timeButtonText}>{time}</Text>
+            <Text style={[styles.timeButtonText, {color: colors.textcolor}]}>{time}</Text>
           </TouchableOpacity>
         ))}
       </View>
-      <Text style={styles.notificationintencitytext}>
+      <Text style={[styles.notificationintencitytext, {color: colors.chevcolor}]}>
         Notification Intensity:
       </Text>
       <View style={styles.notificationButtonContainer}>
         {/* Low Volume Button */}
-        <TouchableOpacity style={styles.notificationButton2}>
+        <TouchableOpacity style={[styles.notificationButton2, {backgroundColor: colors.buttoncolor}]}>
           <FontAwesome5 name="volume-down" style={styles.notificationIcon} />
         </TouchableOpacity>
 
         {/* High Volume Button */}
-        <TouchableOpacity style={styles.notificationButton2}>
+        <TouchableOpacity style={[styles.notificationButton2, {backgroundColor: colors.buttoncolor}]}>
           <FontAwesome5 name="volume-up" style={styles.notificationIcon} />
         </TouchableOpacity>
 
         {/* Microphone Settings Button */}
-        <TouchableOpacity style={styles.notificationButton2}>
+        <TouchableOpacity style={[styles.notificationButton2, {backgroundColor: colors.buttoncolor}]}>
           <MaterialCommunityIcons
             name="microphone-settings"
             style={styles.notificationIcon}
@@ -136,7 +138,7 @@ const QuickReminder = () => {
         </TouchableOpacity>
 
         {/* Save Changes Button */}
-        <TouchableOpacity style={styles.saveButton} onPress={handleSetReminder}>
+        <TouchableOpacity style={[styles.saveButton, {backgroundColor: colors.buttoncolor}]} onPress={handleSetReminder}>
           <Text style={styles.actionButtonText} onPress={addnewReminder}>
             Save Changes
           </Text>
@@ -159,11 +161,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "top",
     alignItems: "center",
-    backgroundColor: "#000", // Assuming the background is black
   },
 
   Main: {
-    backgroundColor: "#151515",
     width: 400,
     height: 180,
 
@@ -180,8 +180,6 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginTop: -80,
     fontSize: 20,
-
-    color: "#fff",
   },
   icon: {
     marginRight: 180,
@@ -190,7 +188,6 @@ const styles = StyleSheet.create({
   remindText: {
     fontSize: 25,
     fontWeight: "bold", // Assuming the title is bold
-    color: "#fff",
     marginTop: 15, // Space from the microphone icon
     alignSelf: "flex-start", // Align to the start of the flex container
     marginLeft: 20, // Match the left margin of the title
@@ -203,7 +200,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   timeButton: {
-    backgroundColor: "#D2630F", // Orange background for the buttons
     borderRadius: 45, // Corrected borderRadius to make it a circle
     width: 90, // Width of the button
     height: 90, // Height of the button, same as width for circle shape
@@ -211,7 +207,6 @@ const styles = StyleSheet.create({
     alignItems: "center", // Center the text horizontally
   },
   timeButtonText: {
-    color: "#fff", // White text color
     fontSize: 18, // Font size for the button text
   },
   notificationButton: {
@@ -230,7 +225,6 @@ const styles = StyleSheet.create({
   notificationintencitytext: {
     fontSize: 25,
     fontWeight: "bold", // Assuming the title is bold
-    color: "#fff",
     marginTop: 38, // Space from the microphone icon
     alignSelf: "flex-start", // Align to the start of the flex container
     marginLeft: 20, // Match the left margin of the title
@@ -241,7 +235,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   notificationButton2: {
-    backgroundColor: "#D2630F", // Orange background for the buttons
     borderRadius: 35, // This should be half the width and height for a perfect circle
     width: 80, // Increased width of the button for a larger size
     height: 80, // Increased height of the button for a larger size
@@ -280,7 +273,6 @@ const styles = StyleSheet.create({
   },
 
   saveButton: {
-    backgroundColor: "#D2630F", // Orange background for the save button
     borderRadius: 30,
     paddingVertical: 20,
     paddingHorizontal: 20,

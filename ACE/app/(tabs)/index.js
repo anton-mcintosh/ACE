@@ -5,19 +5,21 @@ import { useEffect } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Button from "../components/Button";
 import { useFonts } from 'expo-font';
+import useTheme from "../Hooks/useTheme";
 
 
 export default function App() {
-  
+  const { color: colors } = useTheme();
+
   return (
     <SafeAreaView style={styles.safeArea}>
 
-    <View style={styles.container}>
+    <View style={[styles.container,{backgroundColor: colors.background}]}>
       {/* Circles */}
       {/* Replace circles with Button component */}
       <View style={styles.header}>
 
-         <Text style={styles.ACEtext}>ACE</Text>
+         <Text style={[styles.ACEtext, {color : colors.chevcolor}]}>ACE</Text>
        </View>
       <Button
         label="Quick"
@@ -97,7 +99,6 @@ const styles = StyleSheet.create({
   },
   ACEtext: {
     fontSize: 60,
-    color: '#ffffff',
     fontWeight: "bold",
     //fontFamily:"RubikGemstones-Regular"
   },
