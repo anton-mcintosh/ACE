@@ -23,6 +23,7 @@ import {
   getStoredCalendarId,
   createCalendar,
 } from "../Modules/CalendarManager";
+import useTheme from "../Hooks/useTheme";
 
 const Event = () => {
   const [date, setDate] = useState(new Date());
@@ -31,6 +32,7 @@ const Event = () => {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedIntensity, setSelectedIntensity] = useState(null);
   //const [selectedTimeReminder, setSelectedTimeReminder] = useState(null);
+  const { color: colors } = useTheme();
 
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -70,15 +72,15 @@ const Event = () => {
 
   return (
     <ScrollView>
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.container}>
-          <Text style={styles.title}>Create Alarm</Text>
+      <SafeAreaView style={[styles.safeArea, {backgroundColor: colors.background}]}>
+        <View style={[styles.container, {backgroundColor: colors.background}]}>
+          <Text style={[styles.title, {color: colors.chevcolor}]}>Create Alarm</Text>
           <StatusBar style="auto" />
 
-          <View style={styles.Main}>
+          <View style={[styles.Main, {backgroundColor: colors.descback}]}>
             <TextInput
               placeholder="Title"
-              placeholderTextColor="#bdbebf"
+              placeholderTextColor={colors.chevcolor}
               style={styles.Input}
               editable={true}
             />
@@ -87,21 +89,21 @@ const Event = () => {
           <View style={styles.dateChangeContainer}>
             <TouchableOpacity
               onPress={() => setShowDatePicker(true)}
-              style={styles.changeButton}
+              style={[styles.changeButton, {backgroundColor: colors.buttoncolor}]}
             >
               <Text style={styles.changeButtonText}>Add Date</Text>
             </TouchableOpacity>
-            <Text style={styles.dateText}>{date.toLocaleDateString()}</Text>
+            <Text style={[styles.dateText, {color: colors.chevcolor}]}>{date.toLocaleDateString()}</Text>
           </View>
 
           <View style={styles.timeChangeContainer}>
             <TouchableOpacity
               onPress={() => setShowTimePicker(true)}
-              style={styles.changeButton}
+              style={[styles.changeButton, {backgroundColor: colors.buttoncolor}]}
             >
               <Text style={styles.changeButtonText}>Add Time</Text>
             </TouchableOpacity>
-            <Text style={styles.timeText}>{time.toLocaleTimeString()}</Text>
+            <Text style={[styles.timeText, {color: colors.chevcolor}]}>{time.toLocaleTimeString()}</Text>
           </View>
           {showDatePicker && (
             <DateTimePicker
@@ -124,13 +126,13 @@ const Event = () => {
               onChange={onChangeTime}
             />
           )}
-          <View style={styles.pickerContainer}>
-            <Text style={styles.reminderText}>Reminder : </Text>
+          <View style={[styles.pickerContainer, {backgroundColor: colors.background}]}>
+            <Text style={[styles.reminderText, {color: colors.chevcolor}]}>Reminder : </Text>
             <Picker
               selectedValue={repeat}
               onValueChange={(itemValue, itemIndex) => setRepeat(itemValue)}
-              style={styles.picker}
-              dropdownIconColor={"white"}
+              style={[styles.picker, {color: colors.chevcolor}]}
+              dropdownIconColor={colors.chevcolor}
               mode="dropdown" // Android only
             >
               {/* <Picker.Item label="None" value="none" /> */}
@@ -141,13 +143,13 @@ const Event = () => {
             </Picker>
           </View>
 
-          <View style={styles.row}>
-            <Text style={styles.snoozeText}>Snooze : </Text>
+          <View style={[styles.row, {backgroundColor: colors.background}]}>
+            <Text style={[styles.snoozeText, {color: colors.chevcolor}]}>Snooze : </Text>
             <Picker
               selectedValue={snooze}
               onValueChange={(itemValue, itemIndex) => setSnooze(itemValue)}
-              style={styles.picker}
-              dropdownIconColor={"white"}
+              style={[styles.picker, {color: colors.chevcolor}]}
+              dropdownIconColor={colors.chevcolor}
               mode="dropdown" // Android only
             >
               <Picker.Item label="5 Minutes" value="5" />
@@ -158,14 +160,14 @@ const Event = () => {
             </Picker>
           </View>
 
-          <Text style={styles.notificationintencitytext}>
+          <Text style={[styles.notificationintencitytext, {color: colors.chevcolor}]}>
             Notification Intencity:
           </Text>
           <View style={styles.notificationButtonContainer}>
             <TouchableOpacity
               onPress={() => handleSelectIntensity("volume-down")}
               style={[
-                styles.notificationButton2,
+                styles.notificationButton2, {backgroundColor: colors.buttoncolor},
                 selectedIntensity === "volume-down" &&
                   styles.selectedIntensityButton,
               ]}
@@ -179,7 +181,7 @@ const Event = () => {
             <TouchableOpacity
               onPress={() => handleSelectIntensity("volume-up")}
               style={[
-                styles.notificationButton2,
+                styles.notificationButton2,  {backgroundColor: colors.buttoncolor},
                 selectedIntensity === "volume-up" &&
                   styles.selectedIntensityButton,
               ]}
@@ -190,7 +192,7 @@ const Event = () => {
             <TouchableOpacity
               onPress={() => handleSelectIntensity("microphone-settings")}
               style={[
-                styles.notificationButton2,
+                styles.notificationButton2,  {backgroundColor: colors.buttoncolor},
                 selectedIntensity === "microphone-settings" &&
                   styles.selectedIntensityButton,
               ]}
@@ -208,7 +210,7 @@ const Event = () => {
             </TouchableOpacity>
 
             {/* Save Changes Button */}
-            <TouchableOpacity style={styles.saveButton}>
+            <TouchableOpacity style={[styles.saveButton, {backgroundColor: colors.buttoncolor}]}>
               <Text style={styles.actionButtonText}>Save Changes</Text>
             </TouchableOpacity>
           </View>

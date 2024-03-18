@@ -45,12 +45,6 @@ const Settings = () => {
                     </View>
                 </Pressable>
             </View>
-            <View style={styles.wideButtonContainer}>
-                <View style={[styles.wideButton, {borderColor: colors.buttoncolor}]}>
-                    <Text style={[styles.text, {color: colors.chevcolor}]}>Icons</Text>
-                    <Entypo name="chevron-right" size={30} color={colors.chevcolor} />
-                </View>
-            </View>
         </View>
     );
 }

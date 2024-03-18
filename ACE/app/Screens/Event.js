@@ -202,7 +202,7 @@ const Event = () => {
             <TextInput
               placeholder="Describe Event..."
               placeholderTextColor= {colors.chevcolor}
-              style={styles.Input1}
+              style={[styles.Input1, {color: colors.chevcolor}]}
               onChangeText={setEventDescription} // Add this line
               value={eventDescription} // And this line
             />
